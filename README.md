@@ -8,7 +8,7 @@ The best way is to start from the sample application available at: https://bitbu
 If you want to integrate it manually into your project just add this to your `build.gradle` file:
 ```
 dependencies {
-    compile 'org.kustom.android:skin-api:0.1'
+    compile 'org.bitbucket.frankmonza:kustomapi:+'
 }
 ```
 
