@@ -1,0 +1,122 @@
+package org.kustom.api;
+
+import android.content.Context;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Scanner;
+
+public class FileUtils {
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public static File getCacheFile(Context context, String authority, String filename) {
+        final File cacheDir = context.getCacheDir();
+        final File folder = new File(cacheDir, authority);
+        if (folder.isDirectory() || folder.mkdirs()) {
+            final File result = new File(folder, filename);
+            if (!result.exists()) try {
+                result.createNewFile();
+            } catch (IOException e) {
+                Logger.e("Unable to create temp file: " + filename);
+            }
+            return result;
+        }
+        Logger.e("Unable to create cache folder: " + authority);
+        return new File(cacheDir, filename);
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public static void clearCache(Context context, String authority) {
+        final File cacheDir = context.getCacheDir();
+        final File folder = new File(cacheDir, authority);
+        File[] files = folder.listFiles();
+        if (files != null) for (File f : files) f.delete();
+    }
+
+    public static String getHash(String seed) {
+        MessageDigest m = null;
+        try {
+            m = MessageDigest.getInstance("MD5");
+            m.update(seed.getBytes(), 0, seed.length());
+            return new BigInteger(1, m.digest()).toString(16);
+        } catch (NoSuchAlgorithmException e) {
+            Logger.e("MD5 not available, using native String hashing");
+        }
+        return Integer.toString(seed.hashCode());
+    }
+
+    public static String cleanFileName(String value, String extension) {
+        if (value == null) return "";
+        return value.trim().replaceAll(" ", "_").replaceAll("[^A-Za-z_0-9]", "") + "." + extension;
+    }
+
+    /**
+     * Strips path and extension from a file
+     *
+     * @param fileName the original file name
+     * @return a valid String with the name of the file
+     */
+    public static String getFileSimpleName(String fileName) {
+        String result = new File(fileName).getName();
+        if (result.lastIndexOf('.') >= 0) {
+            return result.substring(0, result.lastIndexOf('.'));
+        }
+        return result;
+    }
+
+    public static void copy(File src, File dst) throws IOException {
+        InputStream in = new FileInputStream(src);
+        copy(in, dst);
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public static void copy(InputStream in, File dst) throws IOException {
+        if (!dst.exists()) dst.createNewFile();
+        copy(in, new FileOutputStream(dst));
+    }
+
+    public static void copy(InputStream in, OutputStream out) throws IOException {
+        byte[] buf = new byte[1024];
+        int len;
+        while ((len = in.read(buf)) > 0) {
+            out.write(buf, 0, len);
+        }
+        in.close();
+        out.close();
+    }
+
+    public static String readFile(File file) throws IOException {
+        StringBuilder fileContents = new StringBuilder((int) file.length());
+        Scanner scanner = new Scanner(file);
+        String lineSeparator = System.getProperty("line.separator");
+        try {
+            while (scanner.hasNextLine()) {
+                fileContents.append(scanner.nextLine() + lineSeparator);
+            }
+            return fileContents.toString();
+        } finally {
+            scanner.close();
+        }
+    }
+
+    public static String readStream(InputStream stream) throws IOException {
+        StringBuilder fileContents = new StringBuilder();
+        Scanner scanner = new Scanner(stream);
+        String lineSeparator = System.getProperty("line.separator");
+        try {
+            while (scanner.hasNextLine()) {
+                fileContents.append(scanner.nextLine() + lineSeparator);
+            }
+            return fileContents.toString();
+        } finally {
+            scanner.close();
+        }
+    }
+}

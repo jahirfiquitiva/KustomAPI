@@ -1,0 +1,18 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.12.2'
+    }
+}
+
+gradle.taskGraph.whenReady { taskGraph ->
+    if (taskGraph.allTasks.any { it instanceof Sign }) {
+        allprojects { ext."signing.keyId" = project.keyId }
+        allprojects { ext."signing.password" = project.keyPassword }
+        allprojects { ext."signing.secretKeyRingFile" = project.keyFile }
+    }
+}
+

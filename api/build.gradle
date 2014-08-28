@@ -1,0 +1,26 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 20
+    buildToolsVersion "20.0.0"
+
+    defaultConfig {
+        applicationId "org.kustom.kustomapi"
+        minSdkVersion 19
+        targetSdkVersion 20
+        versionCode 1
+        versionName "0.1"
+    }
+
+    buildTypes {
+        release {
+            runProguard false
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+apply from: '../maven.gradle'

@@ -1,0 +1,14 @@
+*.apk
+*.ap_
+*.dex
+*.class
+*.iws
+*.swp
+*.iml
+*.properties
+.gradle/
+.idea
+bin/
+gen/
+out/
+build/
