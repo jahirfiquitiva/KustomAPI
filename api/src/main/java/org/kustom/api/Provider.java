@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import static android.os.ParcelFileDescriptor.MODE_READ_ONLY;
+
 @SuppressLint("Registered")
 public class Provider extends ContentProvider {
 
@@ -111,26 +113,29 @@ public class Provider extends ContentProvider {
         Logger.d("Opening archive://%s, file://%s", archivePath, filePath);
         AssetManager assets = getContext().getAssets();
         try {
-            InputStream is = assets.open(archivePath);
             File cacheFile = getCacheFile(archivePath, filePath);
-            ZipInputStream zis = new ZipInputStream(is);
-            boolean archiveFileFound = false;
-            ZipEntry ze;
-            byte[] buff = new byte[1024];
-            while ((ze = zis.getNextEntry()) != null) {
-                if (ze.getName().equals(filePath)) {
-                    // We always invalidate the cache, caller won't call this if not needed
-                    FileUtils.copy(zis, cacheFile);
-                    // Done
-                    archiveFileFound = true;
-                    break;
+            boolean cacheGood = false;
+            // We always invalidate the cache, caller won't call this if not needed
+            if (!archivePath.endsWith(".zip")) {
+                InputStream is = assets.open(archivePath + "/" + filePath);
+                FileUtils.copy(is, cacheFile);
+                cacheGood = true;
+            } else {
+                InputStream is = assets.open(archivePath);
+                ZipInputStream zis = new ZipInputStream(is);
+                ZipEntry ze;
+                byte[] buff = new byte[1024];
+                while ((ze = zis.getNextEntry()) != null) {
+                    if (ze.getName().equals(filePath)) {
+                        FileUtils.copy(zis, cacheFile);
+                        cacheGood = true;
+                        break;
+                    }
                 }
+                zis.close();
             }
-            zis.close();
             // If we are here everything should have been copied correctly
-            if (archiveFileFound) {
-                return ParcelFileDescriptor.open(cacheFile, ParcelFileDescriptor.MODE_READ_ONLY);
-            }
+            if (cacheGood) return ParcelFileDescriptor.open(cacheFile, MODE_READ_ONLY);
         } catch (IOException e) {
             Logger.e("Unable to open file: " + uri, e);
         }
@@ -144,14 +149,17 @@ public class Provider extends ContentProvider {
         if (paramUri == null || paramUri.getPathSegments().size() < 2) {
             throw new IllegalArgumentException("Invalid arguments in Uri: " + paramUri);
         }
+
         // Parse uri
         LinkedList<String> segments = new LinkedList<String>();
         segments.addAll(paramUri.getPathSegments());
         final String action = segments.remove(0);
+        final String archivePath = getArchivePath(segments);
+        final String folderPath = getFilePath(segments);
 
         // List files
         if (ACTION_LIST.equalsIgnoreCase(action)) {
-            List<String> result = listFiles(getArchivePath(segments), getFilePath(segments));
+            List<String> result = listFiles(archivePath, folderPath);
             MatrixCursor cursor = new MatrixCursor(new String[]{"filename"});
             for (String s : result) {
                 cursor.newRow().add(s);
@@ -163,8 +171,6 @@ public class Provider extends ContentProvider {
 
         // Info
         else if (ACTION_INFO.equalsIgnoreCase(action)) {
-            final String archivePath = getArchivePath(segments);
-            final String folderPath = getFilePath(segments);
             Logger.d("Info archive://%s, folder://%s", archivePath, folderPath);
             // Let's check if cacheFile has been created already, if its not, check archive
             File cacheFile = getCacheFile(archivePath, folderPath);
@@ -206,7 +212,7 @@ public class Provider extends ContentProvider {
         LinkedList<String> result = new LinkedList<String>();
         try {
             // List files in archive
-            if (archivePath.length() > 0) {
+            if (archivePath.length() > 0 && archivePath.endsWith(".zip")) {
                 InputStream is = getContext().getAssets().open(archivePath);
                 ZipInputStream zis = new ZipInputStream(is);
                 ZipEntry ze;
@@ -221,9 +227,16 @@ public class Provider extends ContentProvider {
                     }
                 }
             }
-            // On SD Card
+            // Non compressed
             else {
-                result.addAll(Arrays.asList(getContext().getAssets().list(folderPath)));
+                if (archivePath.length() > 0) {
+                    List<String> entries = Arrays.asList(getContext().getAssets().list(archivePath));
+                    if (entries.contains(trimPath(folderPath))) {
+                        result.add(trimPath(archivePath + "/" + folderPath));
+                    }
+                } else {
+                    result.addAll(Arrays.asList(getContext().getAssets().list(folderPath)));
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -235,13 +248,14 @@ public class Provider extends ContentProvider {
 
     private String getArchivePath(List<String> segments) {
         String path = "";
-        for (String segment : segments) {
+        for (int i = 0; i < segments.size(); i++) {
+            String segment = segments.get(i);
             if (segment.length() > 0) {
-                path += segment;
                 if (segment.endsWith(".zip")) {
+                    if (i < segments.size() - 1) path += segment;
                     return trimPath(path);
                 } else {
-                    path += "/";
+                    path += segment + "/";
                 }
             }
         }
@@ -250,19 +264,22 @@ public class Provider extends ContentProvider {
 
     private String getFilePath(List<String> segments) {
         String path = "";
-        for (String segment : segments) {
+        for (int i = 0; i < segments.size(); i++) {
+            String segment = segments.get(i);
             if (segment.length() > 0) {
                 path += "/" + segment;
                 // Start over if we find an archive
-                if (segment.endsWith(".zip")) path = "";
+                if (segment.endsWith(".zip")) {
+                    if (i < segments.size() - 1) path = "";
+                    else return trimPath(segment);
+                }
             }
         }
         return trimPath(path);
     }
 
     private String trimPath(String path) {
-        while (path.startsWith("/")) path = path.substring(1);
-        return path;
+        return path.replaceFirst("^/+", "").replaceFirst("/+$", "").replaceAll("/+", "/");
     }
 
 }
