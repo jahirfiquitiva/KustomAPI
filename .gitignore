@@ -5,7 +5,7 @@
 *.iws
 *.swp
 *.iml
-*.properties
+local.properties
 .gradle/
 .idea
 bin/
