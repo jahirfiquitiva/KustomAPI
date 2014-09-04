@@ -112,17 +112,19 @@ public class Provider extends ContentProvider {
         final String filePath = getFilePath(uri.getPathSegments());
         Logger.d("Opening archive://%s, file://%s", archivePath, filePath);
         AssetManager assets = getContext().getAssets();
+        InputStream is= null;
+        ZipInputStream zis = null;
         try {
             File cacheFile = getCacheFile(archivePath, filePath);
             boolean cacheGood = false;
             // We always invalidate the cache, caller won't call this if not needed
             if (!archivePath.endsWith(".zip")) {
-                InputStream is = assets.open(archivePath + "/" + filePath);
+                is = assets.open(archivePath + "/" + filePath);
                 FileUtils.copy(is, cacheFile);
                 cacheGood = true;
             } else {
-                InputStream is = assets.open(archivePath);
-                ZipInputStream zis = new ZipInputStream(is);
+                is = assets.open(archivePath);
+                zis = new ZipInputStream(is);
                 ZipEntry ze;
                 byte[] buff = new byte[1024];
                 while ((ze = zis.getNextEntry()) != null) {
@@ -138,6 +140,15 @@ public class Provider extends ContentProvider {
             if (cacheGood) return ParcelFileDescriptor.open(cacheFile, MODE_READ_ONLY);
         } catch (IOException e) {
             Logger.e("Unable to open file: " + uri, e);
+        } finally {
+            if (is != null) try {
+                is.close();
+            } catch (IOException ignored) {
+            }
+            if (zis != null) try {
+                zis.close();
+            } catch (IOException ignored) {
+            }
         }
         throw new FileNotFoundException("No file supported by provider at: " + uri);
     }
@@ -210,11 +221,13 @@ public class Provider extends ContentProvider {
     private List<String> listFiles(String archivePath, String folderPath) {
         Logger.d("List archive://%s, folder://%s", archivePath, folderPath);
         LinkedList<String> result = new LinkedList<String>();
+        InputStream is= null;
+        ZipInputStream zis = null;
         try {
             // List files in archive
             if (archivePath.length() > 0 && archivePath.endsWith(".zip")) {
-                InputStream is = getContext().getAssets().open(archivePath);
-                ZipInputStream zis = new ZipInputStream(is);
+                is = getContext().getAssets().open(archivePath);
+                zis = new ZipInputStream(is);
                 ZipEntry ze;
                 while ((ze = zis.getNextEntry()) != null) {
                     // Folder Search
@@ -240,6 +253,15 @@ public class Provider extends ContentProvider {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            if (is != null) try {
+                is.close();
+            } catch (IOException ignored) {
+            }
+            if (zis != null) try {
+                zis.close();
+            } catch (IOException ignored) {
+            }
         }
         // Done return data
         Logger.d("List returned %d items", result.size());
