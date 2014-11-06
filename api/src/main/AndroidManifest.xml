@@ -1,6 +1,5 @@
 <manifest
     xmlns:tools="http://schemas.android.com/tools"
     package="org.kustom.api">
-    <uses-sdk tools:node="replace" />
     <application />
 </manifest>
