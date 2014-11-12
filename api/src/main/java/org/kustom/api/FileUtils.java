@@ -71,11 +71,6 @@ public class FileUtils {
         return result;
     }
 
-    public static void copy(File src, File dst) throws IOException {
-        InputStream in = new FileInputStream(src);
-        copy(in, dst);
-    }
-
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void copy(InputStream in, File dst) throws IOException {
         if (!dst.exists()) dst.createNewFile();
@@ -90,33 +85,5 @@ public class FileUtils {
         }
         in.close();
         out.close();
-    }
-
-    public static String readFile(File file) throws IOException {
-        StringBuilder fileContents = new StringBuilder((int) file.length());
-        Scanner scanner = new Scanner(file);
-        String lineSeparator = System.getProperty("line.separator");
-        try {
-            while (scanner.hasNextLine()) {
-                fileContents.append(scanner.nextLine() + lineSeparator);
-            }
-            return fileContents.toString();
-        } finally {
-            scanner.close();
-        }
-    }
-
-    public static String readStream(InputStream stream) throws IOException {
-        StringBuilder fileContents = new StringBuilder();
-        Scanner scanner = new Scanner(stream);
-        String lineSeparator = System.getProperty("line.separator");
-        try {
-            while (scanner.hasNextLine()) {
-                fileContents.append(scanner.nextLine() + lineSeparator);
-            }
-            return fileContents.toString();
-        } finally {
-            scanner.close();
-        }
     }
 }

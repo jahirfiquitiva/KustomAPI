@@ -3,7 +3,6 @@ package org.kustom.api;
 import android.annotation.SuppressLint;
 import android.content.ContentProvider;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.database.Cursor;
@@ -16,10 +15,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.util.zip.ZipFile;
 
 import static android.os.ParcelFileDescriptor.MODE_READ_ONLY;
 
@@ -121,18 +121,17 @@ public class Provider extends ContentProvider {
                 FileUtils.copy(is, cacheFile);
                 cacheGood = true;
             } else {
-                InputStream is = assets.open(archivePath);
-                ZipInputStream zis = new ZipInputStream(is);
-                ZipEntry ze;
-                byte[] buff = new byte[1024];
-                while ((ze = zis.getNextEntry()) != null) {
+                ZipFile zf = new ZipFile(getArchiveFile(archivePath));
+                Enumeration<? extends ZipEntry> entries = zf.entries();
+                while (entries.hasMoreElements()) {
+                    ZipEntry ze = entries.nextElement();
                     if (ze.getName().equals(filePath)) {
-                        FileUtils.copy(zis, cacheFile);
+                        FileUtils.copy(zf.getInputStream(ze), cacheFile);
                         cacheGood = true;
                         break;
                     }
                 }
-                zis.close();
+                zf.close();
             }
             // If we are here everything should have been copied correctly
             if (cacheGood) return ParcelFileDescriptor.open(cacheFile, MODE_READ_ONLY);
@@ -140,6 +139,16 @@ public class Provider extends ContentProvider {
             Logger.e("Unable to open file: " + uri, e);
         }
         throw new FileNotFoundException("No file supported by provider at: " + uri);
+    }
+
+    private File getArchiveFile(String archivePath) throws IOException {
+        File zipCacheFile = getCacheFile(archivePath, "");
+        if (!zipCacheFile.exists()) {
+            AssetManager assets = getContext().getAssets();
+            InputStream is = assets.open(archivePath);
+            FileUtils.copy(is, zipCacheFile);
+        }
+        return zipCacheFile;
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -213,10 +222,10 @@ public class Provider extends ContentProvider {
         try {
             // List files in archive
             if (archivePath.length() > 0 && archivePath.endsWith(".zip")) {
-                InputStream is = getContext().getAssets().open(archivePath);
-                ZipInputStream zis = new ZipInputStream(is);
-                ZipEntry ze;
-                while ((ze = zis.getNextEntry()) != null) {
+                ZipFile zf = new ZipFile(getArchiveFile(archivePath));
+                Enumeration<? extends ZipEntry> entries = zf.entries();
+                while (entries.hasMoreElements()) {
+                    ZipEntry ze = entries.nextElement();
                     // Folder Search
                     if (ze.getName().startsWith(folderPath + "/")) {
                         result.add(ze.getName().substring(ze.getName().lastIndexOf("/")));
