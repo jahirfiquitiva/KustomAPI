@@ -112,12 +112,13 @@ public class Provider extends ContentProvider {
         final String filePath = getFilePath(uri.getPathSegments());
         Logger.d("Opening archive://%s, file://%s", archivePath, filePath);
         AssetManager assets = getContext().getAssets();
+        InputStream is= null;
         try {
             File cacheFile = getCacheFile(archivePath, filePath);
             boolean cacheGood = false;
             // We always invalidate the cache, caller won't call this if not needed
             if (!archivePath.endsWith(".zip")) {
-                InputStream is = assets.open(archivePath + "/" + filePath);
+                is = assets.open(archivePath + "/" + filePath);
                 FileUtils.copy(is, cacheFile);
                 cacheGood = true;
             } else {
@@ -137,14 +138,19 @@ public class Provider extends ContentProvider {
             if (cacheGood) return ParcelFileDescriptor.open(cacheFile, MODE_READ_ONLY);
         } catch (IOException e) {
             Logger.e("Unable to open file: " + uri, e);
+        } finally {
+            if (is != null) try {
+                is.close();
+            } catch (IOException ignored) {
+            }
         }
         throw new FileNotFoundException("No file supported by provider at: " + uri);
     }
 
     private File getArchiveFile(String archivePath) throws IOException {
         File zipCacheFile = getCacheFile(archivePath, "");
-        if (!zipCacheFile.exists()) {
-            AssetManager assets = getContext().getAssets();
+        AssetManager assets = getContext().getAssets();
+        if (zipCacheFile.length() != assets.openFd(archivePath).getLength()) {
             InputStream is = assets.open(archivePath);
             FileUtils.copy(is, zipCacheFile);
         }
@@ -219,6 +225,7 @@ public class Provider extends ContentProvider {
     private List<String> listFiles(String archivePath, String folderPath) {
         Logger.d("List archive://%s, folder://%s", archivePath, folderPath);
         LinkedList<String> result = new LinkedList<String>();
+        InputStream is= null;
         try {
             // List files in archive
             if (archivePath.length() > 0 && archivePath.endsWith(".zip")) {
@@ -249,6 +256,11 @@ public class Provider extends ContentProvider {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            if (is != null) try {
+                is.close();
+            } catch (IOException ignored) {
+            }
         }
         // Done return data
         Logger.d("List returned %d items", result.size());
