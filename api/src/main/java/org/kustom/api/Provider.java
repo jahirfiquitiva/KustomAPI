@@ -27,14 +27,9 @@ import static android.os.ParcelFileDescriptor.MODE_READ_ONLY;
 public class Provider extends ContentProvider {
 
     /**
-     * This filter tells the package manager that we can provide Wallpapers
+     * Used to match an archive kfile archive
      */
-    public static final String ACTION_PROVIDER_WALLPAPERS = "org.kustom.provider.WALLPAPERS";
-
-    /**
-     * This filter tells the package manager that we can provide Komponents
-     */
-    public static final String ACTION_PROVIDER_KOMPONENTS = "org.kustom.provider.KOMPONENTS";
+    public final static String ARCHIVE_REGEXP = ".*\\.(k...)(\\.zip)?(/.*)?";
 
     /**
      * List action used to get contents of the provider on a specific path
@@ -117,7 +112,7 @@ public class Provider extends ContentProvider {
             File cacheFile = getCacheFile(archivePath, filePath);
             boolean cacheGood = false;
             // We always invalidate the cache, caller won't call this if not needed
-            if (!archivePath.endsWith(".zip")) {
+            if (!archivePath.matches(ARCHIVE_REGEXP)) {
                 is = assets.open(archivePath + "/" + filePath);
                 FileUtils.copy(is, cacheFile);
                 cacheGood = true;
@@ -203,16 +198,19 @@ public class Provider extends ContentProvider {
         return null;
     }
 
+    @SuppressWarnings("unused")
     public static Uri buildQuery(String authority, String action, String archivePath, String path) {
         return Uri.parse(String.format("content://%s/%s/%s/%s", authority, action,
                 archivePath == null ? "" : archivePath, path));
     }
 
+    @SuppressWarnings("unused")
     public static Uri buildContentUri(String authority, String archivePath, String path) {
         return Uri.parse(String.format("content://%s/%s/%s", authority,
                 archivePath == null ? "" : archivePath, path));
     }
 
+    @SuppressWarnings("unused")
     public static FileInfo buildFileInfo(Cursor c) {
         return new FileInfo(c);
     }
@@ -228,7 +226,7 @@ public class Provider extends ContentProvider {
         InputStream is= null;
         try {
             // List files in archive
-            if (archivePath.length() > 0 && archivePath.endsWith(".zip")) {
+            if (archivePath.matches(ARCHIVE_REGEXP)) {
                 ZipFile zf = new ZipFile(getArchiveFile(archivePath));
                 Enumeration<? extends ZipEntry> entries = zf.entries();
                 while (entries.hasMoreElements()) {
@@ -272,7 +270,7 @@ public class Provider extends ContentProvider {
         for (int i = 0; i < segments.size(); i++) {
             String segment = segments.get(i);
             if (segment.length() > 0) {
-                if (segment.endsWith(".zip")) {
+                if (segment.matches(ARCHIVE_REGEXP)) {
                     if (i < segments.size() - 1) path += segment;
                     return trimPath(path);
                 } else {
@@ -290,7 +288,7 @@ public class Provider extends ContentProvider {
             if (segment.length() > 0) {
                 path += "/" + segment;
                 // Start over if we find an archive
-                if (segment.endsWith(".zip")) {
+                if (segment.matches(ARCHIVE_REGEXP)) {
                     if (i < segments.size() - 1) path = "";
                     else return trimPath(segment);
                 }

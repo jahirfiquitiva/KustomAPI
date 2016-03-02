@@ -3,7 +3,6 @@ package org.kustom.api;
 import android.content.Context;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,7 +10,6 @@ import java.io.OutputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Scanner;
 
 public class FileUtils {
 
@@ -41,7 +39,7 @@ public class FileUtils {
     }
 
     public static String getHash(String seed) {
-        MessageDigest m = null;
+        MessageDigest m;
         try {
             m = MessageDigest.getInstance("MD5");
             m.update(seed.getBytes(), 0, seed.length());
@@ -52,24 +50,6 @@ public class FileUtils {
         return Integer.toString(seed.hashCode());
     }
 
-    public static String cleanFileName(String value, String extension) {
-        if (value == null) return "";
-        return value.trim().replaceAll(" ", "_").replaceAll("[^A-Za-z_0-9]", "") + "." + extension;
-    }
-
-    /**
-     * Strips path and extension from a file
-     *
-     * @param fileName the original file name
-     * @return a valid String with the name of the file
-     */
-    public static String getFileSimpleName(String fileName) {
-        String result = new File(fileName).getName();
-        if (result.lastIndexOf('.') >= 0) {
-            return result.substring(0, result.lastIndexOf('.'));
-        }
-        return result;
-    }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void copy(InputStream in, File dst) throws IOException {
@@ -78,7 +58,7 @@ public class FileUtils {
     }
 
     public static void copy(InputStream in, OutputStream out) throws IOException {
-        byte[] buf = new byte[1024];
+        byte[] buf = new byte[1024 * 4];
         int len;
         while ((len = in.read(buf)) > 0) {
             out.write(buf, 0, len);

@@ -1,20 +1,19 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
 
     defaultConfig {
-        applicationId "org.kustom.kustomapi"
         minSdkVersion 19
-        targetSdkVersion 21
-        versionCode 5
-        versionName "0.5"
+        targetSdkVersion 22
+        versionCode 7
+        versionName "0.7"
     }
 
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled false
         }
     }
 }

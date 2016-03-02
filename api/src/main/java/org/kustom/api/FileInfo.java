@@ -44,14 +44,17 @@ public class FileInfo {
         return cursor;
     }
 
+    @SuppressWarnings("unused")
     public boolean isValid() {
         return mIsValid;
     }
 
+    @SuppressWarnings("unused")
     public long getSize() {
         return mSize;
     }
 
+    @SuppressWarnings("unused")
     public long getModified() {
         return mModified;
     }
