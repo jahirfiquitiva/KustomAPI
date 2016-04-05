@@ -107,7 +107,8 @@ public class Provider extends ContentProvider {
         final String filePath = getFilePath(uri.getPathSegments());
         Logger.d("Opening archive://%s, file://%s", archivePath, filePath);
         AssetManager assets = getContext().getAssets();
-        InputStream is= null;
+        InputStream is = null;
+        ZipFile zf = null;
         try {
             File cacheFile = getCacheFile(archivePath, filePath);
             boolean cacheGood = false;
@@ -117,7 +118,7 @@ public class Provider extends ContentProvider {
                 FileUtils.copy(is, cacheFile);
                 cacheGood = true;
             } else {
-                ZipFile zf = new ZipFile(getArchiveFile(archivePath));
+                zf = new ZipFile(getArchiveFile(archivePath));
                 Enumeration<? extends ZipEntry> entries = zf.entries();
                 while (entries.hasMoreElements()) {
                     ZipEntry ze = entries.nextElement();
@@ -127,7 +128,6 @@ public class Provider extends ContentProvider {
                         break;
                     }
                 }
-                zf.close();
             }
             // If we are here everything should have been copied correctly
             if (cacheGood) return ParcelFileDescriptor.open(cacheFile, MODE_READ_ONLY);
@@ -136,6 +136,10 @@ public class Provider extends ContentProvider {
         } finally {
             if (is != null) try {
                 is.close();
+            } catch (IOException ignored) {
+            }
+            if (zf != null) try {
+                zf.close();
             } catch (IOException ignored) {
             }
         }
@@ -161,7 +165,7 @@ public class Provider extends ContentProvider {
         }
 
         // Parse uri
-        LinkedList<String> segments = new LinkedList<String>();
+        LinkedList<String> segments = new LinkedList<>();
         segments.addAll(paramUri.getPathSegments());
         final String action = segments.remove(0);
         final String archivePath = getArchivePath(segments);
@@ -222,12 +226,12 @@ public class Provider extends ContentProvider {
 
     private List<String> listFiles(String archivePath, String folderPath) {
         Logger.d("List archive://%s, folder://%s", archivePath, folderPath);
-        LinkedList<String> result = new LinkedList<String>();
-        InputStream is= null;
+        LinkedList<String> result = new LinkedList<>();
+        ZipFile zf = null;
         try {
             // List files in archive
             if (archivePath.matches(ARCHIVE_REGEXP)) {
-                ZipFile zf = new ZipFile(getArchiveFile(archivePath));
+                zf = new ZipFile(getArchiveFile(archivePath));
                 Enumeration<? extends ZipEntry> entries = zf.entries();
                 while (entries.hasMoreElements()) {
                     ZipEntry ze = entries.nextElement();
@@ -255,8 +259,8 @@ public class Provider extends ContentProvider {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            if (is != null) try {
-                is.close();
+            if (zf != null) try {
+                zf.close();
             } catch (IOException ignored) {
             }
         }
