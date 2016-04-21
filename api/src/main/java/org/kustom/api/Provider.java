@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.SharedPreferences;
+import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.MatrixCursor;
@@ -149,10 +150,12 @@ public class Provider extends ContentProvider {
     private File getArchiveFile(String archivePath) throws IOException {
         File zipCacheFile = getCacheFile(archivePath, "");
         AssetManager assets = getContext().getAssets();
-        if (zipCacheFile.length() != assets.openFd(archivePath).getLength()) {
+        AssetFileDescriptor fd = assets.openFd(archivePath);
+        if (zipCacheFile.length() != fd.getLength()) {
             InputStream is = assets.open(archivePath);
             FileUtils.copy(is, zipCacheFile);
         }
+        fd.close();
         return zipCacheFile;
     }
 
