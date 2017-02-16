@@ -96,7 +96,7 @@ public class Provider extends ContentProvider {
                     .getPackageInfo(getContext().getPackageName(), 0).versionCode;
             if (lastUpgradedRelease != currentRelease) {
                 Log.i(TAG, "Clearing cache after upgrade");
-                FileUtils.clearCache(getContext(), "provider");
+                CacheHelper.clearCache(getContext(), "provider");
                 sp.edit().putInt(PREF_LAST_UPGRADE, currentRelease).commit();
             }
         } catch (Exception e) {
@@ -122,7 +122,7 @@ public class Provider extends ContentProvider {
             // We always invalidate the cache, caller won't call this if not needed
             if (!archivePath.matches(ARCHIVE_REGEXP)) {
                 is = assets.open(archivePath + "/" + filePath);
-                FileUtils.copy(is, cacheFile);
+                CacheHelper.copy(is, cacheFile);
                 cacheGood = true;
             } else {
                 zf = new ZipFile(getArchiveFile(archivePath));
@@ -130,7 +130,7 @@ public class Provider extends ContentProvider {
                 while (entries.hasMoreElements()) {
                     ZipEntry ze = entries.nextElement();
                     if (ze.getName().equals(filePath)) {
-                        FileUtils.copy(zf.getInputStream(ze), cacheFile);
+                        CacheHelper.copy(zf.getInputStream(ze), cacheFile);
                         cacheGood = true;
                         break;
                     }
@@ -225,15 +225,15 @@ public class Provider extends ContentProvider {
         AssetFileDescriptor fd = assets.openFd(archivePath);
         if (zipCacheFile.length() != fd.getLength()) {
             InputStream is = assets.open(archivePath);
-            FileUtils.copy(is, zipCacheFile);
+            CacheHelper.copy(is, zipCacheFile);
         }
         fd.close();
         return zipCacheFile;
     }
 
     private File getCacheFile(String archivePath, String filePath) {
-        String cacheFileName = FileUtils.getHash(String.format("%s/%s", archivePath, filePath));
-        return FileUtils.getCacheFile(getContext(), "provider", cacheFileName);
+        String cacheFileName = CacheHelper.getHash(String.format("%s/%s", archivePath, filePath));
+        return CacheHelper.getCacheFile(getContext(), "provider", cacheFileName);
     }
 
     private List<String> listFiles(String archivePath, String folderPath) {

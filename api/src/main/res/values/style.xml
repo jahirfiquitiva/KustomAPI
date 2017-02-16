@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="KustomDashboardTheme.Dark" parent="KustomDashboardTheme.Dark.Base" />
+
+    <style name="KustomDashboardTheme.Dark.Base" parent="Theme.AppCompat.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowActionModeOverlay">true</item>
+        <!-- AppCompat Material Colors -->
+        <item name="colorPrimary">@color/kustom_dashboard_dark_primary</item>
+        <item name="colorPrimaryDark">@color/kustom_dashboard_dark_primary_dark</item>
+        <item name="colorAccent">@color/kustom_dashboard_dark_accent</item>
+        <!-- Main Android Colors -->
+        <item name="android:textColorPrimary">@color/kustom_dashboard_dark_primary_text</item>
+        <item name="android:textColorPrimaryInverse">@color/kustom_dashboard_dark_primary_text_inverted</item>
+        <item name="android:textColorSecondary">@color/kustom_dashboard_dark_secondary_text</item>
+        <item name="android:textColorSecondaryInverse">@color/kustom_dashboard_dark_secondary_text_inverted</item>
+        <item name="android:textColorTertiary">@color/kustom_dashboard_dark_tertiary_text</item>
+        <item name="android:windowBackground">@color/kustom_dashboard_dark_background</item>
+    </style>
+
+    <style name="KustomDashboardTheme.Light" parent="KustomDashboardTheme.Light.Base" />
+
+    <style name="KustomDashboardTheme.Light.Base" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowActionModeOverlay">true</item>
+        <!-- AppCompat Material Colors -->
+        <item name="colorPrimary">@color/kustom_dashboard_light_primary</item>
+        <item name="colorPrimaryDark">@color/kustom_dashboard_light_primary_dark</item>
+        <item name="colorAccent">@color/kustom_dashboard_light_accent</item>
+        <!-- Main Android Colors -->
+        <item name="android:textColorPrimary">@color/kustom_dashboard_light_primary_text</item>
+        <item name="android:textColorPrimaryInverse">@color/kustom_dashboard_light_primary_text_inverted</item>
+        <item name="android:textColorSecondary">@color/kustom_dashboard_light_secondary_text</item>
+        <item name="android:textColorSecondaryInverse">@color/kustom_dashboard_light_secondary_text_inverted</item>
+        <item name="android:textColorTertiary">@color/kustom_dashboard_light_tertiary_text</item>
+        <item name="android:windowBackground">@color/kustom_dashboard_light_background</item>
+    </style>
+
+</resources>

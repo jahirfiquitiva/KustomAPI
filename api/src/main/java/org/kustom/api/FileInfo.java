@@ -3,11 +3,14 @@ package org.kustom.api;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.database.MatrixCursor;
+import android.util.Log;
 
 import java.io.File;
 
 @SuppressWarnings("WeakerAccess")
 public class FileInfo {
+    private final static String TAG = FileInfo.class.getSimpleName();
+
     private static final String COL_VALID = "valid";
     private static final String COL_SIZE = "size";
     private static final String COL_MODIFIED = "modified";
@@ -24,9 +27,9 @@ public class FileInfo {
             mModified = Long.valueOf(c.getString(c.getColumnIndexOrThrow(COL_MODIFIED)));
             c.close();
         } catch (CursorIndexOutOfBoundsException e) {
-            Logger.d("Cursor is empty, file not found");
+            Log.d(TAG, "Cursor is empty, file not found");
         } catch (Exception e) {
-            Logger.e("Invalid cursor data for File Info", e);
+            Log.e(TAG, "Invalid cursor data for File Info", e);
         }
     }
 

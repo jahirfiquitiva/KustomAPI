@@ -1,18 +1,20 @@
 package org.kustom.api;
 
 import android.content.Context;
+import android.util.Log;
+
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 @SuppressWarnings("WeakerAccess")
-public class FileUtils {
+public class CacheHelper {
+    private final static String TAG = CacheHelper.class.getSimpleName();
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static File getCacheFile(Context context, String authority, String filename) {
@@ -23,16 +25,17 @@ public class FileUtils {
             if (!result.exists()) try {
                 result.createNewFile();
             } catch (IOException e) {
-                Logger.e("Unable to create temp file: " + filename);
+                Log.e(TAG, "Unable to create temp file: " + filename);
             }
             return result;
         }
-        Logger.e("Unable to create cache folder: " + authority);
+        Log.e(TAG, "Unable to create cache folder: " + authority);
         return new File(cacheDir, filename);
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void clearCache(Context context, String authority) {
+        Log.i(TAG, "Claring cache");
         final File cacheDir = context.getCacheDir();
         final File folder = new File(cacheDir, authority);
         File[] files = folder.listFiles();
@@ -46,13 +49,13 @@ public class FileUtils {
             m.update(seed.getBytes(), 0, seed.length());
             return new BigInteger(1, m.digest()).toString(16);
         } catch (NoSuchAlgorithmException e) {
-            Logger.e("MD5 not available, using native String hashing");
+            Log.e(TAG, "MD5 not available, using native String hashing");
         }
         return Integer.toString(seed.hashCode());
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void copy(InputStream in, File dst) throws IOException {
-        org.apache.commons.io.FileUtils.copyToFile(in, dst);
+        FileUtils.copyToFile(in, dst);
     }
 }

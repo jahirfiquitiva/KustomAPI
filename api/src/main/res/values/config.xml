@@ -1,0 +1,39 @@
+<resources>
+
+    <!-- Name of the skin to be shown inside the app, by default its the same as the app name -->
+    <string name="kustom_pack_title">Kustom Pack Title</string>
+
+    <!-- A brief description of the pack contents -->
+    <string name="kustom_pack_description">Skin pack description, not too long or will be cut</string>
+
+    <!-- Title on the Tool Bar -->
+    <string name="kustom_dashboard_title">@string/kustom_pack_title</string>
+
+    <!-- Decides Weather Dark Or Light Theme Should Be Used -->
+    <bool name="kustom_dashboard_light_theme">false</bool>
+
+    <!-- Light Theme Colors -->
+    <color name="kustom_dashboard_light_accent">#fff000</color>
+    <color name="kustom_dashboard_light_background">#EFEFEF</color>
+    <color name="kustom_dashboard_light_primary_dark">#404040</color>
+    <color name="kustom_dashboard_light_primary">#E0E0E0</color>
+    <color name="kustom_dashboard_light_primary_light">#FFFFFF</color>
+    <color name="kustom_dashboard_light_primary_text">#303030</color>
+    <color name="kustom_dashboard_light_secondary_text">#505050</color>
+    <color name="kustom_dashboard_light_tertiary_text">#99505050</color>
+    <color name="kustom_dashboard_light_primary_text_inverted">#EEEEEE</color>
+    <color name="kustom_dashboard_light_secondary_text_inverted">#999999</color>
+
+    <!-- Dark Theme Colors -->
+    <color name="kustom_dashboard_dark_accent">#fff000</color>
+    <color name="kustom_dashboard_dark_background">#333333</color>
+    <color name="kustom_dashboard_dark_primary_dark">#222222</color>
+    <color name="kustom_dashboard_dark_primary">#444444</color>
+    <color name="kustom_dashboard_dark_primary_light">#606060</color>
+    <color name="kustom_dashboard_dark_primary_text">#F0F0F0</color>
+    <color name="kustom_dashboard_dark_secondary_text">#D0D0D0</color>
+    <color name="kustom_dashboard_dark_tertiary_text">#AAD0D0D0</color>
+    <color name="kustom_dashboard_dark_primary_text_inverted">#EEEEEE</color>
+    <color name="kustom_dashboard_dark_secondary_text_inverted">#999999</color>
+
+</resources>
