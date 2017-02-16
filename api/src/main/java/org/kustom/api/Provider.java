@@ -10,6 +10,9 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -26,6 +29,7 @@ import static android.os.ParcelFileDescriptor.MODE_READ_ONLY;
 
 @SuppressLint("Registered")
 public class Provider extends ContentProvider {
+    private final static String TAG = Provider.class.getSimpleName();
 
     /**
      * Used to match an archive kfile archive
@@ -51,51 +55,52 @@ public class Provider extends ContentProvider {
     /**
      * Unsupported
      */
-    public int delete(Uri paramUri, String paramString, String[] paramArrayOfString) {
+    public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] args) {
         return 0;
     }
 
     /**
      * Unsupported
      */
-    public String getType(Uri paramUri) {
+    public String getType(@NonNull Uri uri) {
         return null;
     }
 
     /**
      * Unsupported
      */
-    public Uri insert(Uri paramUri, ContentValues paramContentValues) {
+    public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
         return null;
     }
 
     /**
      * Unsupported
      */
-    public int update(Uri paramUri, ContentValues paramContentValues, String paramString,
-                      String[] paramArrayOfString) {
+    public int update(@NonNull Uri uri, @Nullable ContentValues values,
+                      @Nullable String selection, @Nullable String[] args) {
         return 0;
     }
 
     /**
      * Perform upgrade routines
      */
+    @SuppressWarnings("ConstantConditions")
     @SuppressLint("CommitPrefEdits")
     public boolean onCreate() {
-        Logger.i("Provider started");
+        Log.i(TAG, "Provider started");
         // Upgrade Check
-        SharedPreferences sp = getContext().getSharedPreferences(SHARED_PREFS, 0);
         try {
+            SharedPreferences sp = getContext().getSharedPreferences(SHARED_PREFS, 0);
             final int lastUpgradedRelease = sp.getInt(PREF_LAST_UPGRADE, 0);
             final int currentRelease = getContext().getPackageManager()
                     .getPackageInfo(getContext().getPackageName(), 0).versionCode;
             if (lastUpgradedRelease != currentRelease) {
-                Logger.i("Clearing cache after upgrade");
+                Log.i(TAG, "Clearing cache after upgrade");
                 FileUtils.clearCache(getContext(), "provider");
                 sp.edit().putInt(PREF_LAST_UPGRADE, currentRelease).commit();
             }
         } catch (Exception e) {
-            Logger.e("Unable to check for upgrade", e);
+            Log.e(TAG, "Unable to check for upgrade", e);
         }
         // Done
         return true;
@@ -103,14 +108,15 @@ public class Provider extends ContentProvider {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
-    public ParcelFileDescriptor openFile(Uri uri, String mode) throws FileNotFoundException {
+    public ParcelFileDescriptor openFile(@NonNull Uri uri, @NonNull String mode)
+            throws FileNotFoundException {
         final String archivePath = getArchivePath(uri.getPathSegments());
         final String filePath = getFilePath(uri.getPathSegments());
-        Logger.d("Opening archive://%s, file://%s", archivePath, filePath);
-        AssetManager assets = getContext().getAssets();
+        Log.i(TAG, "Open: " + uri);
         InputStream is = null;
         ZipFile zf = null;
         try {
+            AssetManager assets = getAssets();
             File cacheFile = getCacheFile(archivePath, filePath);
             boolean cacheGood = false;
             // We always invalidate the cache, caller won't call this if not needed
@@ -132,8 +138,8 @@ public class Provider extends ContentProvider {
             }
             // If we are here everything should have been copied correctly
             if (cacheGood) return ParcelFileDescriptor.open(cacheFile, MODE_READ_ONLY);
-        } catch (IOException e) {
-            Logger.e("Unable to open file: " + uri, e);
+        } catch (IOException | NullPointerException e) {
+            Log.e(TAG, "Unable to open file: " + uri, e);
         } finally {
             if (is != null) try {
                 is.close();
@@ -147,29 +153,20 @@ public class Provider extends ContentProvider {
         throw new FileNotFoundException("No file supported by provider at: " + uri);
     }
 
-    private File getArchiveFile(String archivePath) throws IOException {
-        File zipCacheFile = getCacheFile(archivePath, "");
-        AssetManager assets = getContext().getAssets();
-        AssetFileDescriptor fd = assets.openFd(archivePath);
-        if (zipCacheFile.length() != fd.getLength()) {
-            InputStream is = assets.open(archivePath);
-            FileUtils.copy(is, zipCacheFile);
-        }
-        fd.close();
-        return zipCacheFile;
-    }
-
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public Cursor query(Uri paramUri, String[] paramArrayOfString1, String paramString1,
-                        String[] paramArrayOfString2, String paramString2) {
+    public Cursor query(@NonNull Uri uri, @Nullable String[] projection,
+                        @Nullable String selection, @Nullable String[] selectionArgs,
+                        @Nullable String sortOrder) {
+        Log.d(TAG, "Query: " + uri);
+
         // Check if Uri is valid
-        if (paramUri == null || paramUri.getPathSegments().size() < 2) {
-            throw new IllegalArgumentException("Invalid arguments in Uri: " + paramUri);
+        if (uri.getPathSegments().size() < 2) {
+            throw new IllegalArgumentException("Invalid arguments in Uri: " + uri);
         }
 
         // Parse uri
         LinkedList<String> segments = new LinkedList<>();
-        segments.addAll(paramUri.getPathSegments());
+        segments.addAll(uri.getPathSegments());
         final String action = segments.remove(0);
         final String archivePath = getArchivePath(segments);
         final String folderPath = getFilePath(segments);
@@ -188,7 +185,7 @@ public class Provider extends ContentProvider {
 
         // Info
         else if (ACTION_INFO.equalsIgnoreCase(action)) {
-            Logger.d("Info archive://%s, folder://%s", archivePath, folderPath);
+            Log.d(TAG, String.format("Info archive://%s, folder://%s", archivePath, folderPath));
             // Let's check if cacheFile has been created already, if its not, check archive
             File cacheFile = getCacheFile(archivePath, folderPath);
             boolean isValid = cacheFile.exists() && cacheFile.canRead() && cacheFile.length() > 0;
@@ -201,7 +198,7 @@ public class Provider extends ContentProvider {
         }
 
         // Unsupported op
-        Logger.e("Unsupported operation, uri: " + paramUri);
+        Log.e(TAG, "Unsupported operation, uri: " + uri);
         return null;
     }
 
@@ -222,13 +219,25 @@ public class Provider extends ContentProvider {
         return new FileInfo(c);
     }
 
+    private File getArchiveFile(String archivePath) throws IOException {
+        File zipCacheFile = getCacheFile(archivePath, "");
+        AssetManager assets = getAssets();
+        AssetFileDescriptor fd = assets.openFd(archivePath);
+        if (zipCacheFile.length() != fd.getLength()) {
+            InputStream is = assets.open(archivePath);
+            FileUtils.copy(is, zipCacheFile);
+        }
+        fd.close();
+        return zipCacheFile;
+    }
+
     private File getCacheFile(String archivePath, String filePath) {
         String cacheFileName = FileUtils.getHash(String.format("%s/%s", archivePath, filePath));
         return FileUtils.getCacheFile(getContext(), "provider", cacheFileName);
     }
 
     private List<String> listFiles(String archivePath, String folderPath) {
-        Logger.d("List archive://%s, folder://%s", archivePath, folderPath);
+        Log.i(TAG, String.format("List archive://%s, folder://%s", archivePath, folderPath));
         LinkedList<String> result = new LinkedList<>();
         ZipFile zf = null;
         try {
@@ -251,12 +260,12 @@ public class Provider extends ContentProvider {
             // Non compressed
             else {
                 if (archivePath.length() > 0) {
-                    List<String> entries = Arrays.asList(getContext().getAssets().list(archivePath));
+                    List<String> entries = Arrays.asList(getAssets().list(archivePath));
                     if (entries.contains(trimPath(folderPath))) {
                         result.add(trimPath(archivePath + "/" + folderPath));
                     }
                 } else {
-                    result.addAll(Arrays.asList(getContext().getAssets().list(folderPath)));
+                    result.addAll(Arrays.asList(getAssets().list(folderPath)));
                 }
             }
         } catch (IOException e) {
@@ -268,7 +277,7 @@ public class Provider extends ContentProvider {
             }
         }
         // Done return data
-        Logger.d("List returned %d items", result.size());
+        Log.d(TAG, String.format("List returned %d items", result.size()));
         return result;
     }
 
@@ -308,4 +317,9 @@ public class Provider extends ContentProvider {
         return path.replaceFirst("^/+", "").replaceFirst("/+$", "").replaceAll("/+", "/");
     }
 
+    @NonNull
+    @SuppressWarnings("ConstantConditions")
+    private AssetManager getAssets() {
+        return getContext().getAssets();
+    }
 }

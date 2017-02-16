@@ -11,6 +11,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+@SuppressWarnings("WeakerAccess")
 public class FileUtils {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -50,20 +51,8 @@ public class FileUtils {
         return Integer.toString(seed.hashCode());
     }
 
-
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void copy(InputStream in, File dst) throws IOException {
-        if (!dst.exists()) dst.createNewFile();
-        copy(in, new FileOutputStream(dst));
-    }
-
-    public static void copy(InputStream in, OutputStream out) throws IOException {
-        byte[] buf = new byte[1024 * 4];
-        int len;
-        while ((len = in.read(buf)) > 0) {
-            out.write(buf, 0, len);
-        }
-        in.close();
-        out.close();
+        org.apache.commons.io.FileUtils.copyToFile(in, dst);
     }
 }

@@ -6,10 +6,11 @@ import android.database.MatrixCursor;
 
 import java.io.File;
 
+@SuppressWarnings("WeakerAccess")
 public class FileInfo {
-    protected static final String COL_VALID = "valid";
-    protected static final String COL_SIZE = "size";
-    protected static final String COL_MODIFIED = "modified";
+    private static final String COL_VALID = "valid";
+    private static final String COL_SIZE = "size";
+    private static final String COL_MODIFIED = "modified";
 
     private boolean mIsValid = false;
     private long mSize = 0L;
