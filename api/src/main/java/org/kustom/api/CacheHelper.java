@@ -3,11 +3,11 @@ package org.kustom.api;
 import android.content.Context;
 import android.util.Log;
 
-import org.apache.commons.io.FileUtils;
-
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -56,6 +56,17 @@ public class CacheHelper {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void copy(InputStream in, File dst) throws IOException {
-        FileUtils.copyToFile(in, dst);
+        if (!dst.exists()) dst.createNewFile();
+        copy(in, new FileOutputStream(dst));
+    }
+
+    public static void copy(InputStream in, OutputStream out) throws IOException {
+        byte[] buf = new byte[1024 * 4];
+        int len;
+        while ((len = in.read(buf)) > 0) {
+            out.write(buf, 0, len);
+        }
+        in.close();
+        out.close();
     }
 }
