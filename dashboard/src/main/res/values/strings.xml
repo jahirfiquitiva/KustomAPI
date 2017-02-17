@@ -3,6 +3,7 @@
     <string name="install">Install</string>
     <string name="info">Info</string>
     <string name="no_results">No results</string>
+    <string name="komponent_open">In order to add a Komponent open Kustom and press + on the editor ToolBar, then select Komponent and find this pack</string>
     <string name="rate_app">Rate App</string>
     <string name="kustom_not_installed">App not installed</string>
     <string name="kustom_not_installed_desc">In order to use this preset you will need Kustom installed with PRO license unless this is a featured free theme</string>

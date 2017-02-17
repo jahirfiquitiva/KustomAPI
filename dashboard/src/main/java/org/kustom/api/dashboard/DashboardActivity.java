@@ -3,7 +3,6 @@ package org.kustom.api.dashboard;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.AssetManager;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -15,7 +14,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -26,9 +24,6 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
-
-import java.io.IOException;
-import java.util.ArrayList;
 
 public class DashboardActivity
         extends AppCompatActivity
@@ -72,8 +67,7 @@ public class DashboardActivity
         if (tab.getText() != null) {
             String ext = tab.getText().toString().toLowerCase();
             KustomConfig.Env env = KustomConfig.getEnv(ext);
-            if (env != null)
-                reload(listFolder(env.getFolder(), env.getExtension()));
+            if (env != null) reload(env.getFiles(this));
         }
     }
 
@@ -106,17 +100,7 @@ public class DashboardActivity
                     .onNeutral(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(@NonNull MaterialDialog d, @NonNull DialogAction w) {
-                            try {
-                                PackageManager packageManager = getPackageManager();
-                                if (getPackageManager() != null) {
-                                    packageManager.setComponentEnabledSetting(getComponentName(),
-                                            PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                                            PackageManager.DONT_KILL_APP);
-                                }
-                            } catch (Exception e) {
-                                Toast.makeText(DashboardActivity.this,
-                                        e.getMessage(), Toast.LENGTH_LONG).show();
-                            }
+                            ActivityUtils.hideFromLauncher(DashboardActivity.this, getComponentName());
                             new MaterialDialog.Builder(DashboardActivity.this)
                                     .title(R.string.hide_from_launcher)
                                     .content(R.string.hide_from_launcher_done)
@@ -149,35 +133,40 @@ public class DashboardActivity
         KustomConfig.Env env = KustomConfig.getEnv(item.getPresetFile().getExt());
         if (env == null) throw new RuntimeException("Invalid env");
         final String pkg = env.getPkg();
-
-        // Asks to install Kustom
-        if (pkg != null && !PackageHelper.packageInstalled(this, pkg)) {
+        // Standard presets
+        if (pkg != null) {
+            if (!PackageHelper.packageInstalled(this, pkg)) {
+                new MaterialDialog.Builder(this)
+                        .title(R.string.kustom_not_installed)
+                        .content(R.string.kustom_not_installed_desc)
+                        .negativeText(android.R.string.cancel)
+                        .positiveText(R.string.install)
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog d, @NonNull DialogAction w) {
+                                ActivityUtils.openPkgStoreUri(DashboardActivity.this, pkg);
+                            }
+                        })
+                        .show();
+            } else {
+                Intent i = new Intent();
+                i.setComponent(new ComponentName(pkg, env.getEditorActivity()));
+                i.setData(new Uri.Builder()
+                        .scheme("kfile")
+                        .authority(String.format("%s.kustom.provider", getPackageName()))
+                        .appendPath(item.getPresetFile().getPath())
+                        .build());
+                startActivity(i);
+            }
+        }
+        // Komponents
+        else {
             new MaterialDialog.Builder(this)
-                    .title(R.string.kustom_not_installed)
-                    .content(R.string.kustom_not_installed_desc)
-                    .negativeText(android.R.string.cancel)
-                    .positiveText(R.string.install)
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog d, @NonNull DialogAction w) {
-                            ActivityUtils.openPkgStoreUri(DashboardActivity.this, pkg);
-                        }
-                    })
+                    .title("Komponents")
+                    .content(R.string.komponent_open)
+                    .negativeText(android.R.string.ok)
                     .show();
         }
-
-        // Open Kustom
-        else {
-            Intent i = new Intent();
-            i.setComponent(new ComponentName(pkg, env.getEditorActivity()));
-            i.setData(new Uri.Builder()
-                    .scheme("kfile")
-                    .authority(String.format("%s.kustom.provider", getPackageName()))
-                    .appendPath(item.getPresetFile().getPath())
-                    .build());
-            startActivity(i);
-        }
-
         return true;
     }
 
@@ -186,7 +175,7 @@ public class DashboardActivity
         for (String ext : KustomConfig.getExtensions()) {
             KustomConfig.Env env = KustomConfig.getEnv(ext);
             if (env != null) {
-                if (listFolder(env.getFolder(), env.getExtension()).length > 0) {
+                if (env.getFiles(this).length > 0) {
                     tabs.addTab(tabs.newTab().setText(ext.toUpperCase()));
                 }
             }
@@ -201,24 +190,5 @@ public class DashboardActivity
         mList.setVisibility(entries.length > 0 ? View.VISIBLE : View.GONE);
         findViewById(R.id.text).setVisibility(entries.length > 0 ? View.GONE : View.VISIBLE);
         findViewById(R.id.progress).setVisibility(View.GONE);
-    }
-
-    @NonNull
-    private String[] listFolder(@NonNull String folder, @NonNull String extension) {
-        ArrayList<String> result = new ArrayList<>();
-        try {
-            AssetManager assets = getAssets();
-            String[] files = assets.list(folder);
-            if (files != null) {
-                for (String file : files) {
-                    if (file.toLowerCase().endsWith(extension)
-                            || file.toLowerCase().endsWith(extension + ".zip"))
-                        result.add(String.format("%s/%s", folder, file));
-                }
-            }
-        } catch (IOException e) {
-            Log.e(TAG, "Unable to list folder: " + folder);
-        }
-        return result.toArray(new String[result.size()]);
     }
 }
