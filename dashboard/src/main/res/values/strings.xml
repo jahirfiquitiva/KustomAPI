@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="install">Install</string>
+    <string name="info">Info</string>
     <string name="kustom_not_installed">App not installed</string>
     <string name="kustom_not_installed_desc">In order to use this app you will need Kustom installed with PRO license unless this is a featured free theme</string>
     <string name="hide_from_launcher">Hide From Launcher</string>

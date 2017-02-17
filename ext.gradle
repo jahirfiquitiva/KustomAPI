@@ -1,0 +1,6 @@
+ext {
+    buildToolsVersion = "25.0.2"
+    compileSdkVersion = 25
+    targetSdkVersion = 25
+    supportLibVersion = "25.1.1"
+}
