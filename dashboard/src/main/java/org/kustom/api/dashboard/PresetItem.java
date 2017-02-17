@@ -4,35 +4,30 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.mikepenz.fastadapter.FastAdapter;
-import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.items.AbstractItem;
 import com.mikepenz.fastadapter.utils.ViewHolderFactory;
 
-import org.kustom.api.R;
-
 import java.util.List;
 
-public class PresetItem
+class PresetItem
         extends AbstractItem<PresetItem, PresetItem.ViewHolder>
-        implements Comparable<PresetItem>{
+        implements Comparable<PresetItem> {
 
     private static final ViewHolderFactory<? extends PresetItem.ViewHolder>
             FACTORY = new PresetItem.ItemFactory();
 
     private final PresetFile mPresetFile;
 
-    protected PresetItem(@NonNull PresetFile presetFile) {
+    PresetItem(@NonNull PresetFile presetFile) {
         mPresetFile = presetFile;
     }
 
     @NonNull
-    public PresetFile getPresetFile() {
+    PresetFile getPresetFile() {
         return mPresetFile;
     }
 

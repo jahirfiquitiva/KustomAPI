@@ -1,15 +1,15 @@
 package org.kustom.api.dashboard;
 
-import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -18,13 +18,14 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
-
-import org.kustom.api.R;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,10 +37,11 @@ public class DashboardActivity
 
     private RecyclerView mList;
 
+    private final FastItemAdapter<PresetItem> mAdapter = new FastItemAdapter<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(getResources().getBoolean(R.bool.kustom_dashboard_light_theme)
-                ? R.style.KustomDashboardTheme_Light : R.style.KustomDashboardTheme_Dark);
+        setTheme(ThemeHelper.getThemeResource(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.kustom_dashboard_activity);
 
@@ -58,6 +60,7 @@ public class DashboardActivity
         );
         layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
         mList.setLayoutManager(layoutManager);
+        mList.setAdapter(mAdapter);
 
         // Reload
         ((TabLayout) findViewById(R.id.tabs)).addOnTabSelectedListener(this);
@@ -78,7 +81,59 @@ public class DashboardActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
+        for (int i = 0; i < menu.size(); i++) {
+            Drawable icon = menu.getItem(i).getIcon();
+            if (icon != null) {
+                icon.mutate();
+                icon.setColorFilter(
+                        ThemeHelper.getThemeColor(this, android.R.attr.textColorPrimary),
+                        PorterDuff.Mode.SRC_ATOP
+                );
+            }
+        }
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_info) {
+            new MaterialDialog.Builder(this)
+                    .title(R.string.kustom_pack_title)
+                    .content(R.string.kustom_pack_description)
+                    .negativeText(android.R.string.cancel)
+                    .neutralText(R.string.hide_from_launcher)
+                    .positiveText(R.string.rate_app)
+                    .onNeutral(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog d, @NonNull DialogAction w) {
+                            try {
+                                PackageManager packageManager = getPackageManager();
+                                if (getPackageManager() != null) {
+                                    packageManager.setComponentEnabledSetting(getComponentName(),
+                                            PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                                            PackageManager.DONT_KILL_APP);
+                                }
+                            } catch (Exception e) {
+                                Toast.makeText(DashboardActivity.this,
+                                        e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                            new MaterialDialog.Builder(DashboardActivity.this)
+                                    .title(R.string.hide_from_launcher)
+                                    .content(R.string.hide_from_launcher_done)
+                                    .positiveText(android.R.string.ok)
+                                    .show();
+                        }
+                    })
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog d, @NonNull DialogAction w) {
+                            ActivityUtils.openPkgStoreUri(DashboardActivity.this, getPackageName());
+                        }
+                    })
+                    .show();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -97,23 +152,17 @@ public class DashboardActivity
 
         // Asks to install Kustom
         if (pkg != null && !PackageHelper.packageInstalled(this, pkg)) {
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.kustom_not_installed)
-                    .setMessage(R.string.kustom_not_installed_desc)
-                    .setPositiveButton(R.string.install, new DialogInterface.OnClickListener() {
+            new MaterialDialog.Builder(this)
+                    .title(R.string.kustom_not_installed)
+                    .content(R.string.kustom_not_installed_desc)
+                    .negativeText(android.R.string.cancel)
+                    .positiveText(R.string.install)
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Uri uri = Uri.parse("market://details?id=" + pkg);
-                            Intent i = new Intent(Intent.ACTION_VIEW, uri);
-                            try {
-                                startActivity(i);
-                            } catch (ActivityNotFoundException e) {
-                                Toast.makeText(DashboardActivity.this,
-                                        e.getMessage(), Toast.LENGTH_LONG).show();
-                            }
+                        public void onClick(@NonNull MaterialDialog d, @NonNull DialogAction w) {
+                            ActivityUtils.openPkgStoreUri(DashboardActivity.this, pkg);
                         }
                     })
-                    .setNegativeButton(android.R.string.cancel, null)
                     .show();
         }
 
@@ -146,13 +195,12 @@ public class DashboardActivity
     }
 
     private void reload(@NonNull String[] entries) {
-        FastItemAdapter<PresetItem> adapter = new FastItemAdapter<>();
+        mAdapter.clear();
         for (String entry : entries)
-            adapter.add(new PresetItem(new PresetFile(entry)).withOnItemClickListener(this));
-        mList.setVisibility(adapter.getItemCount() > 0 ? View.VISIBLE : View.GONE);
-        findViewById(R.id.text).setVisibility(adapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
+            mAdapter.add(new PresetItem(new PresetFile(entry)).withOnItemClickListener(this));
+        mList.setVisibility(entries.length > 0 ? View.VISIBLE : View.GONE);
+        findViewById(R.id.text).setVisibility(entries.length > 0 ? View.GONE : View.VISIBLE);
         findViewById(R.id.progress).setVisibility(View.GONE);
-        mList.setAdapter(adapter);
     }
 
     @NonNull
