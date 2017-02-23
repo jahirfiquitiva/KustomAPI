@@ -18,7 +18,6 @@ dependencies {
     }
     compile 'com.mikepenz:fastadapter-commons:2.1.0@aar'
     compile 'com.github.bumptech.glide:glide:3.7.0'
-    compile 'com.afollestad.material-dialogs:core:0.9.3.0'
 }
 
 android {

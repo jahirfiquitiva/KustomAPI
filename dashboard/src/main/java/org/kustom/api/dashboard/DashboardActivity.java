@@ -1,29 +1,32 @@
 package org.kustom.api.dashboard;
 
 import android.content.ComponentName;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
+
+import static org.kustom.api.dashboard.ActivityUtils.hideFromLauncher;
+import static org.kustom.api.dashboard.ActivityUtils.openPkgStoreUri;
 
 public class DashboardActivity
         extends AppCompatActivity
@@ -36,6 +39,7 @@ public class DashboardActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i(TAG, "Dashboard starting");
         setTheme(ThemeHelper.getThemeResource(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.kustom_dashboard_activity);
@@ -91,27 +95,25 @@ public class DashboardActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_info) {
-            new MaterialDialog.Builder(this)
-                    .title(R.string.kustom_pack_title)
-                    .content(R.string.kustom_pack_description)
-                    .negativeText(android.R.string.cancel)
-                    .neutralText(R.string.hide_from_launcher)
-                    .positiveText(R.string.rate_app)
-                    .onNeutral(new MaterialDialog.SingleButtonCallback() {
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.kustom_pack_title)
+                    .setMessage(R.string.kustom_pack_description)
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .setPositiveButton(R.string.rate_app, new OnClickListener() {
                         @Override
-                        public void onClick(@NonNull MaterialDialog d, @NonNull DialogAction w) {
-                            ActivityUtils.hideFromLauncher(DashboardActivity.this, getComponentName());
-                            new MaterialDialog.Builder(DashboardActivity.this)
-                                    .title(R.string.hide_from_launcher)
-                                    .content(R.string.hide_from_launcher_done)
-                                    .positiveText(android.R.string.ok)
-                                    .show();
+                        public void onClick(DialogInterface dialog, int which) {
+                            openPkgStoreUri(DashboardActivity.this, getPackageName());
                         }
                     })
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    .setNeutralButton(R.string.hide_from_launcher, new OnClickListener() {
                         @Override
-                        public void onClick(@NonNull MaterialDialog d, @NonNull DialogAction w) {
-                            ActivityUtils.openPkgStoreUri(DashboardActivity.this, getPackageName());
+                        public void onClick(DialogInterface dialog, int which) {
+                            hideFromLauncher(DashboardActivity.this, getComponentName());
+                            new AlertDialog.Builder(DashboardActivity.this)
+                                    .setTitle(R.string.hide_from_launcher)
+                                    .setMessage(R.string.hide_from_launcher_done)
+                                    .setPositiveButton(android.R.string.ok, null)
+                                    .show();
                         }
                     })
                     .show();
@@ -136,15 +138,14 @@ public class DashboardActivity
         // Standard presets
         if (pkg != null) {
             if (!PackageHelper.packageInstalled(this, pkg)) {
-                new MaterialDialog.Builder(this)
-                        .title(R.string.kustom_not_installed)
-                        .content(R.string.kustom_not_installed_desc)
-                        .negativeText(android.R.string.cancel)
-                        .positiveText(R.string.install)
-                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.kustom_not_installed)
+                        .setMessage(R.string.kustom_not_installed_desc)
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .setPositiveButton(R.string.install, new OnClickListener() {
                             @Override
-                            public void onClick(@NonNull MaterialDialog d, @NonNull DialogAction w) {
-                                ActivityUtils.openPkgStoreUri(DashboardActivity.this, pkg);
+                            public void onClick(DialogInterface dialog, int which) {
+                                openPkgStoreUri(DashboardActivity.this, pkg);
                             }
                         })
                         .show();
@@ -161,10 +162,10 @@ public class DashboardActivity
         }
         // Komponents
         else {
-            new MaterialDialog.Builder(this)
-                    .title("Komponents")
-                    .content(R.string.komponent_open)
-                    .negativeText(android.R.string.ok)
+            new AlertDialog.Builder(this)
+                    .setTitle("Komponents")
+                    .setMessage(R.string.komponent_open)
+                    .setPositiveButton(android.R.string.ok, null)
                     .show();
         }
         return true;
