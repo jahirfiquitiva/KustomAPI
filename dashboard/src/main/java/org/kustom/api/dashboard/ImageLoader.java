@@ -44,6 +44,8 @@ class ImageLoader implements StreamModelLoader<PresetFile> {
             while ((ze = mZipStream.getNextEntry()) != null) {
                 if (ze.getName().equals("preset_thumb_portrait.jpg"))
                     return mZipStream;
+                else if (ze.getName().equals("komponent_thumb.jpg"))
+                    return mZipStream;
             }
             throw new IOException("File Not Found: " + mPresetFile.getName());
         }
