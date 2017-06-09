@@ -24,13 +24,13 @@ public class WeatherRequest implements Parcelable {
     }
 
     protected WeatherRequest(Parcel in) {
-        this.mLatitude = in.readDouble();
-        this.mLongitude = in.readDouble();
-        this.mCountry = in.readString();
-        this.mCountryCode = in.readString();
-        this.mPostalCode = in.readString();
-        this.mAdminArea = in.readString();
-        this.mLocality = in.readString();
+        mLatitude = in.readDouble();
+        mLongitude = in.readDouble();
+        mCountry = in.readString();
+        mCountryCode = in.readString();
+        mPostalCode = in.readString();
+        mAdminArea = in.readString();
+        mLocality = in.readString();
     }
 
     public double getLatitude() {

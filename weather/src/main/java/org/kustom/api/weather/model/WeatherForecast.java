@@ -43,8 +43,8 @@ public class WeatherForecast extends WeatherCondition {
 
     protected WeatherForecast(Parcel in) {
         super(in);
-        this.mTempMax = in.readFloat();
-        this.mTempMin = in.readFloat();
+        mTempMax = in.readFloat();
+        mTempMin = in.readFloat();
     }
 
     public static final Creator<WeatherForecast> CREATOR = new Creator<WeatherForecast>() {
