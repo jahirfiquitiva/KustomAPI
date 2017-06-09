@@ -18,6 +18,10 @@ public abstract class WeatherCondition implements Parcelable {
     private int mHumidity = 0;
     @SerializedName("code")
     private WeatherCode mCode = WeatherCode.NOT_AVAILABLE;
+    @SerializedName("valid_from")
+    private long mValidFrom = 0L;
+    @SerializedName("valid_to")
+    private long mValidTo = 0L;
 
     public WeatherCondition() {
     }
@@ -29,6 +33,8 @@ public abstract class WeatherCondition implements Parcelable {
         mPressure = in.readFloat();
         mHumidity = in.readInt();
         mCode = (WeatherCode) in.readValue(WeatherCode.class.getClassLoader());
+        mValidFrom = in.readLong();
+        mValidTo = in.readLong();
     }
 
     @Override
@@ -39,6 +45,8 @@ public abstract class WeatherCondition implements Parcelable {
         dest.writeFloat(mPressure);
         dest.writeInt(mHumidity);
         dest.writeValue(mCode);
+        dest.writeValue(mValidFrom);
+        dest.writeValue(mValidTo);
     }
 
     public String getCondition() {
@@ -55,6 +63,38 @@ public abstract class WeatherCondition implements Parcelable {
 
     public void setCode(WeatherCode code) {
         mCode = code;
+    }
+
+    /**
+     * @return the UTC time since this data is valid (mandatory for hourly forecasts)
+     */
+    public long getValidFrom() {
+        return mValidFrom;
+    }
+
+    /**
+     * Sets validity limit of this value (start)
+     *
+     * @param validFrom the UTC time since this data is valid (mandatory for hourly forecasts)
+     */
+    public void setValidFrom(long validFrom) {
+        mValidFrom = validFrom;
+    }
+
+    /**
+     * @return the UTC time till this data is valid (mandatory for hourly forecasts)
+     */
+    public long getValidTo() {
+        return mValidTo;
+    }
+
+    /**
+     * Sets validity limit of this value (end)
+     *
+     * @param validTo the UTC time till this data is valid (mandatory for hourly forecasts)
+     */
+    public void setValidTo(long validTo) {
+        mValidTo = validTo;
     }
 
     /**

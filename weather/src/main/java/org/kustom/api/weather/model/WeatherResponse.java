@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 @SuppressWarnings("unused")
 public class WeatherResponse implements Parcelable {
-    private WeatherCurrent mCurrent;
+    private WeatherInstant mCurrent;
     private WeatherForecast[] mForecast;
     private WeatherForecast[] mHourlyForecast;
 
@@ -13,7 +13,7 @@ public class WeatherResponse implements Parcelable {
     }
 
     protected WeatherResponse(Parcel in) {
-        mCurrent = in.readParcelable(WeatherCurrent.class.getClassLoader());
+        mCurrent = in.readParcelable(WeatherInstant.class.getClassLoader());
         mForecast = in.createTypedArray(WeatherForecast.CREATOR);
         mHourlyForecast = in.createTypedArray(WeatherForecast.CREATOR);
     }
@@ -30,11 +30,11 @@ public class WeatherResponse implements Parcelable {
         dest.writeTypedArray(this.mHourlyForecast, flags);
     }
 
-    public WeatherCurrent getCurrent() {
+    public WeatherInstant getCurrent() {
         return mCurrent;
     }
 
-    public WeatherResponse setCurrent(WeatherCurrent current) {
+    public WeatherResponse setCurrent(WeatherInstant current) {
         mCurrent = current;
         return this;
     }
