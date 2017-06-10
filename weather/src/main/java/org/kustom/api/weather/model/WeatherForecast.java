@@ -17,6 +17,10 @@ public class WeatherForecast extends WeatherCondition {
         return mTempMax;
     }
 
+    public float getTempAvg() {
+        return (mTempMin + mTempMax) / 2;
+    }
+
     public void setTempMax(float value) {
         mTempMax = value;
     }
