@@ -1,15 +1,13 @@
 package org.kustom.api.weather.model;
 
 import android.annotation.SuppressLint;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.Log;
 
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
-public enum WeatherCode implements Parcelable {
+public enum WeatherCode {
     TORNADO(0, WeatherIcon.TORNADO),
     TROPICAL_STORM(1, WeatherIcon.TSTORM),
     HURRICANE(2, WeatherIcon.TSTORM),
@@ -75,16 +73,6 @@ public enum WeatherCode implements Parcelable {
         mIcon = icon;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(final Parcel dest, final int flags) {
-        dest.writeInt(ordinal());
-    }
-
     public WeatherIcon getIcon() {
         return mIcon;
     }
@@ -126,16 +114,4 @@ public enum WeatherCode implements Parcelable {
         }
         return result;
     }
-
-    public static final Creator<WeatherCode> CREATOR = new Creator<WeatherCode>() {
-        @Override
-        public WeatherCode createFromParcel(final Parcel source) {
-            return WeatherCode.values()[source.readInt()];
-        }
-
-        @Override
-        public WeatherCode[] newArray(final int size) {
-            return new WeatherCode[size];
-        }
-    };
 }

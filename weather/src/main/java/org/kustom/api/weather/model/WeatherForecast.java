@@ -41,8 +41,8 @@ public class WeatherForecast extends WeatherCondition {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
-        dest.writeFloat(this.mTempMax);
-        dest.writeFloat(this.mTempMin);
+        dest.writeFloat(mTempMax);
+        dest.writeFloat(mTempMin);
     }
 
     protected WeatherForecast(Parcel in) {

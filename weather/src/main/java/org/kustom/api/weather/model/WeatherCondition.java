@@ -32,7 +32,7 @@ public abstract class WeatherCondition implements Parcelable {
         mWindSpeed = in.readFloat();
         mPressure = in.readFloat();
         mHumidity = in.readInt();
-        mCode = (WeatherCode) in.readValue(WeatherCode.class.getClassLoader());
+        mCode = WeatherCode.valueOf(in.readString());
         mValidFrom = in.readLong();
         mValidTo = in.readLong();
     }
@@ -44,9 +44,9 @@ public abstract class WeatherCondition implements Parcelable {
         dest.writeFloat(mWindSpeed);
         dest.writeFloat(mPressure);
         dest.writeInt(mHumidity);
-        dest.writeValue(mCode);
-        dest.writeValue(mValidFrom);
-        dest.writeValue(mValidTo);
+        dest.writeString(mCode.toString());
+        dest.writeLong(mValidFrom);
+        dest.writeLong(mValidTo);
     }
 
     public String getCondition() {
