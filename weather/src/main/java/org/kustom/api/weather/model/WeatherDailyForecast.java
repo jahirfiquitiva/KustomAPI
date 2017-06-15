@@ -13,7 +13,7 @@ public class WeatherDailyForecast extends WeatherCondition {
     @SerializedName("rain_chance")
     private int mRainChance = 0;
     @SerializedName("rain")
-    private int mRain = 0;
+    private float mRain = 0;
 
     public WeatherDailyForecast() {
     }
@@ -23,7 +23,7 @@ public class WeatherDailyForecast extends WeatherCondition {
         mTempMax = in.readFloat();
         mTempMin = in.readFloat();
         mRainChance = in.readInt();
-        mRain = in.readInt();
+        mRain = in.readFloat();
     }
 
     @Override
@@ -37,7 +37,7 @@ public class WeatherDailyForecast extends WeatherCondition {
         dest.writeFloat(mTempMax);
         dest.writeFloat(mTempMin);
         dest.writeInt(mRainChance);
-        dest.writeInt(mRain);
+        dest.writeFloat(mRain);
     }
 
     /**
@@ -98,7 +98,7 @@ public class WeatherDailyForecast extends WeatherCondition {
     /**
      * @return rain precipitations in millimiters
      */
-    public int getRain() {
+    public float getRain() {
         return mRain;
     }
 
@@ -107,7 +107,7 @@ public class WeatherDailyForecast extends WeatherCondition {
      *
      * @param rain in millimiters
      */
-    public void setRain(int rain) {
+    public void setRain(float rain) {
         mRain = rain;
     }
 

@@ -13,7 +13,7 @@ public class WeatherHourlyForecast extends WeatherInstant {
     @SerializedName("rain_chance")
     private int mRainChance = 0;
     @SerializedName("rain")
-    private int mRain = 0;
+    private float mRain = 0;
 
     public WeatherHourlyForecast() {
     }
@@ -23,7 +23,7 @@ public class WeatherHourlyForecast extends WeatherInstant {
         mValidFrom = in.readLong();
         mValidTo = in.readLong();
         mRainChance = in.readInt();
-        mRain = in.readInt();
+        mRain = in.readFloat();
     }
 
     @Override
@@ -37,7 +37,7 @@ public class WeatherHourlyForecast extends WeatherInstant {
         dest.writeLong(mValidFrom);
         dest.writeLong(mValidTo);
         dest.writeInt(mRainChance);
-        dest.writeInt(mRain);
+        dest.writeFloat(mRain);
     }
 
     /**
@@ -91,7 +91,7 @@ public class WeatherHourlyForecast extends WeatherInstant {
     /**
      * @return rain precipitations in millimiters
      */
-    public int getRain() {
+    public float getRain() {
         return mRain;
     }
 
@@ -100,7 +100,7 @@ public class WeatherHourlyForecast extends WeatherInstant {
      *
      * @param rain in millimiters
      */
-    public void setRain(int rain) {
+    public void setRain(float rain) {
         mRain = rain;
     }
 
