@@ -4,13 +4,13 @@ import android.os.Parcel;
 
 import com.google.gson.annotations.SerializedName;
 
-public class WeatherForecast extends WeatherCondition {
+public class WeatherDailyForecast extends WeatherCondition {
     @SerializedName("temp_max")
     private float mTempMax = Float.MAX_VALUE;
     @SerializedName("temp_min")
     private float mTempMin = Float.MIN_VALUE;
 
-    public WeatherForecast() {
+    public WeatherDailyForecast() {
     }
 
     public float getTempMax() {
@@ -45,21 +45,21 @@ public class WeatherForecast extends WeatherCondition {
         dest.writeFloat(mTempMin);
     }
 
-    protected WeatherForecast(Parcel in) {
+    protected WeatherDailyForecast(Parcel in) {
         super(in);
         mTempMax = in.readFloat();
         mTempMin = in.readFloat();
     }
 
-    public static final Creator<WeatherForecast> CREATOR = new Creator<WeatherForecast>() {
+    public static final Creator<WeatherDailyForecast> CREATOR = new Creator<WeatherDailyForecast>() {
         @Override
-        public WeatherForecast createFromParcel(Parcel source) {
-            return new WeatherForecast(source);
+        public WeatherDailyForecast createFromParcel(Parcel source) {
+            return new WeatherDailyForecast(source);
         }
 
         @Override
-        public WeatherForecast[] newArray(int size) {
-            return new WeatherForecast[size];
+        public WeatherDailyForecast[] newArray(int size) {
+            return new WeatherDailyForecast[size];
         }
     };
 }

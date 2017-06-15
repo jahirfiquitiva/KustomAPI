@@ -5,7 +5,6 @@ import android.os.Parcel;
 import com.google.gson.annotations.SerializedName;
 
 public class WeatherInstant extends WeatherCondition {
-
     @SerializedName("temp")
     private float mTemp = Float.MIN_VALUE;
 

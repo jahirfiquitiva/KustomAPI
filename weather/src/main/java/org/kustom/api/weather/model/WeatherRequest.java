@@ -12,6 +12,7 @@ public class WeatherRequest implements Parcelable {
     private final String mPostalCode;
     private final String mAdminArea;
     private final String mLocality;
+    private final String mLang;
 
     private WeatherRequest(Builder builder) {
         mLatitude = builder.mLatitude;
@@ -21,6 +22,7 @@ public class WeatherRequest implements Parcelable {
         mPostalCode = builder.mPostalCode;
         mAdminArea = builder.mAdminArea;
         mLocality = builder.mLocality;
+        mLang = builder.mLang;
     }
 
     protected WeatherRequest(Parcel in) {
@@ -31,34 +33,63 @@ public class WeatherRequest implements Parcelable {
         mPostalCode = in.readString();
         mAdminArea = in.readString();
         mLocality = in.readString();
+        mLang = in.readString();
     }
 
+    /**
+     * @return latitude of the point were we want to fetch weather for
+     */
     public double getLatitude() {
         return mLatitude;
     }
 
+    /**
+     * @return longitude of the point were we want to fetch weather for
+     */
     public double getLongitude() {
         return mLongitude;
     }
 
+    /**
+     * @return reverse geocoded country of the place we are getting weather from
+     */
     public String getCountry() {
         return mCountry;
     }
 
+    /**
+     * @return reverse geocoded country code (es US) of the place we are getting weather from
+     */
     public String getCountryCode() {
         return mCountryCode;
     }
 
+    /**
+     * @return reverse geocoded postal code of the place we are getting weather from
+     */
     public String getPostalCode() {
         return mPostalCode;
     }
 
+    /**
+     * @return reverse geocoded admin area of the place we are getting weather from
+     */
     public String getAdminArea() {
         return mAdminArea;
     }
 
+    /**
+     * @return reverse geocoded locality (es New York City) of the place we are getting weather from
+     */
     public String getLocality() {
         return mLocality;
+    }
+
+    /**
+     * @return preferred lang for the request, this will be appended to the request if available
+     */
+    public String getLang() {
+        return mLang;
     }
 
     @Override
@@ -68,13 +99,14 @@ public class WeatherRequest implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeDouble(this.mLatitude);
-        dest.writeDouble(this.mLongitude);
-        dest.writeString(this.mCountry);
-        dest.writeString(this.mCountryCode);
-        dest.writeString(this.mPostalCode);
-        dest.writeString(this.mAdminArea);
-        dest.writeString(this.mLocality);
+        dest.writeDouble(mLatitude);
+        dest.writeDouble(mLongitude);
+        dest.writeString(mCountry);
+        dest.writeString(mCountryCode);
+        dest.writeString(mPostalCode);
+        dest.writeString(mAdminArea);
+        dest.writeString(mLocality);
+        dest.writeString(mLang);
     }
 
     public static final Creator<WeatherRequest> CREATOR = new Creator<WeatherRequest>() {
@@ -97,42 +129,48 @@ public class WeatherRequest implements Parcelable {
         private String mPostalCode = "";
         private String mAdminArea = "";
         private String mLocality = "";
+        private String mLang = "en";
 
         public Builder() {
         }
 
-        public Builder withLatitude(double val) {
-            mLatitude = val;
+        public Builder withLatitude(double latitude) {
+            mLatitude = latitude;
             return this;
         }
 
-        public Builder withLongitude(double val) {
-            mLongitude = val;
+        public Builder withLongitude(double longitude) {
+            mLongitude = longitude;
             return this;
         }
 
-        public Builder withCountry(String val) {
-            mCountry = val;
+        public Builder withCountry(String country) {
+            mCountry = country;
             return this;
         }
 
-        public Builder withCountryCode(String val) {
-            mCountryCode = val;
+        public Builder withCountryCode(String countryCode) {
+            mCountryCode = countryCode;
             return this;
         }
 
-        public Builder withPostalCode(String val) {
-            mPostalCode = val;
+        public Builder withPostalCode(String postalCode) {
+            mPostalCode = postalCode;
             return this;
         }
 
-        public Builder withAdminArea(String val) {
-            mAdminArea = val;
+        public Builder withAdminArea(String adminArea) {
+            mAdminArea = adminArea;
             return this;
         }
 
-        public Builder withLocality(String val) {
-            mLocality = val;
+        public Builder withLocality(String locality) {
+            mLocality = locality;
+            return this;
+        }
+
+        public Builder withLang(String lang) {
+            mLang = lang;
             return this;
         }
 
