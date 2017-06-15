@@ -4,11 +4,16 @@ import android.os.Parcel;
 
 import com.google.gson.annotations.SerializedName;
 
+@SuppressWarnings("unused")
 public class WeatherHourlyForecast extends WeatherInstant {
     @SerializedName("valid_from")
     private long mValidFrom = 0L;
     @SerializedName("valid_to")
     private long mValidTo = 0L;
+    @SerializedName("rain_chance")
+    private int mRainChance = 0;
+    @SerializedName("rain")
+    private int mRain = 0;
 
     public WeatherHourlyForecast() {
     }
@@ -17,6 +22,8 @@ public class WeatherHourlyForecast extends WeatherInstant {
         super(in);
         mValidFrom = in.readLong();
         mValidTo = in.readLong();
+        mRainChance = in.readInt();
+        mRain = in.readInt();
     }
 
     @Override
@@ -29,6 +36,8 @@ public class WeatherHourlyForecast extends WeatherInstant {
         super.writeToParcel(dest, flags);
         dest.writeLong(mValidFrom);
         dest.writeLong(mValidTo);
+        dest.writeInt(mRainChance);
+        dest.writeInt(mRain);
     }
 
     /**
@@ -63,7 +72,38 @@ public class WeatherHourlyForecast extends WeatherInstant {
         mValidTo = validTo;
     }
 
-    @SuppressWarnings("unused")
+    /**
+     * @return rain chance in percentage 0-100
+     */
+    public int getRainChance() {
+        return mRainChance;
+    }
+
+    /**
+     * Sets current chance of rain
+     *
+     * @param rainChance the chance of rain in percentage 0-100
+     */
+    public void setRainChance(int rainChance) {
+        mRainChance = Math.max(0, Math.min(100, rainChance));
+    }
+
+    /**
+     * @return rain precipitations in millimiters
+     */
+    public int getRain() {
+        return mRain;
+    }
+
+    /**
+     * Sets expected rain precipitations
+     *
+     * @param rain in millimiters
+     */
+    public void setRain(int rain) {
+        mRain = rain;
+    }
+
     public static final Creator<WeatherHourlyForecast> CREATOR = new Creator<WeatherHourlyForecast>() {
         @Override
         public WeatherHourlyForecast createFromParcel(Parcel in) {

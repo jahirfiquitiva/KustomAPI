@@ -4,33 +4,26 @@ import android.os.Parcel;
 
 import com.google.gson.annotations.SerializedName;
 
+@SuppressWarnings("unused")
 public class WeatherDailyForecast extends WeatherCondition {
     @SerializedName("temp_max")
     private float mTempMax = Float.MAX_VALUE;
     @SerializedName("temp_min")
     private float mTempMin = Float.MIN_VALUE;
+    @SerializedName("rain_chance")
+    private int mRainChance = 0;
+    @SerializedName("rain")
+    private int mRain = 0;
 
     public WeatherDailyForecast() {
     }
 
-    public float getTempMax() {
-        return mTempMax;
-    }
-
-    public float getTempAvg() {
-        return (mTempMin + mTempMax) / 2;
-    }
-
-    public void setTempMax(float value) {
-        mTempMax = value;
-    }
-
-    public float getTempMin() {
-        return mTempMin;
-    }
-
-    public void setTempMin(float value) {
-        mTempMin = value;
+    protected WeatherDailyForecast(Parcel in) {
+        super(in);
+        mTempMax = in.readFloat();
+        mTempMin = in.readFloat();
+        mRainChance = in.readInt();
+        mRain = in.readInt();
     }
 
     @Override
@@ -43,12 +36,79 @@ public class WeatherDailyForecast extends WeatherCondition {
         super.writeToParcel(dest, flags);
         dest.writeFloat(mTempMax);
         dest.writeFloat(mTempMin);
+        dest.writeInt(mRainChance);
+        dest.writeInt(mRain);
     }
 
-    protected WeatherDailyForecast(Parcel in) {
-        super(in);
-        mTempMax = in.readFloat();
-        mTempMin = in.readFloat();
+    /**
+     * @return average temperature in centigrades
+     */
+    public float getTempAvg() {
+        return (mTempMin + mTempMax) / 2;
+    }
+
+    /**
+     * @return max temperature in centigrades
+     */
+    public float getTempMax() {
+        return mTempMax;
+    }
+
+    /**
+     * Sets max day temperature
+     *
+     * @param value the temp in Celsius
+     */
+    public void setTempMax(float value) {
+        mTempMax = value;
+    }
+
+    /**
+     * @return min temperature in centigrades
+     */
+    public float getTempMin() {
+        return mTempMin;
+    }
+
+    /**
+     * Sets min day temperature
+     *
+     * @param value the temp in Celsius
+     */
+    public void setTempMin(float value) {
+        mTempMin = value;
+    }
+
+    /**
+     * @return rain chance in percentage 0-100
+     */
+    public int getRainChance() {
+        return mRainChance;
+    }
+
+    /**
+     * Sets current chance of rain
+     *
+     * @param rainChance the chance of rain in percentage 0-100
+     */
+    public void setRainChance(int rainChance) {
+        mRainChance = Math.max(0, Math.min(100, rainChance));
+    }
+
+    /**
+     * @return rain precipitations in millimiters
+     */
+    public int getRain() {
+        return mRain;
+    }
+
+    /**
+     * Sets expected rain precipitations
+     *
+     * @param rain in millimiters
+     */
+    public void setRain(int rain) {
+        mRain = rain;
     }
 
     public static final Creator<WeatherDailyForecast> CREATOR = new Creator<WeatherDailyForecast>() {

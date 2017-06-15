@@ -41,18 +41,36 @@ public abstract class WeatherCondition implements Parcelable {
         dest.writeString(mCode.toString());
     }
 
+    /**
+     * @return current weather condition in readable format
+     */
     public String getCondition() {
         return mCondition;
     }
 
+    /**
+     * Sets condition in readable format
+     *
+     * @param condition the condition possibly in request language
+     */
     public void setCondition(String condition) {
         mCondition = condition;
     }
 
+    /**
+     * A Kustom compatible weather code properly converted
+     *
+     * @return the code of current weather
+     */
     public WeatherCode getCode() {
         return mCode;
     }
 
+    /**
+     * Sets Kustom standard weather code
+     *
+     * @param code the code to be set
+     */
     public void setCode(WeatherCode code) {
         mCode = code;
     }
