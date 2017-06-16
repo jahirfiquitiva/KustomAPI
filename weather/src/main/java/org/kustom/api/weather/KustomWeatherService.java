@@ -27,7 +27,7 @@ public abstract class KustomWeatherService extends Service {
     private final IKustomWeatherService.Stub mBinder = new IKustomWeatherService.Stub() {
         @Override
         public WeatherResponse fetchWeather(WeatherRequest request) throws RemoteException {
-            return null;
+            return KustomWeatherService.this.fetchWeather(request);
         }
     };
 }
