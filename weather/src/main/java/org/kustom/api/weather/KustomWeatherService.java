@@ -11,6 +11,10 @@ import org.kustom.api.weather.model.WeatherResponse;
 
 public abstract class KustomWeatherService extends Service {
 
+    public static final String SETTINGS_EXTRA_SERVICE = "org.kustom.weather.extra.SERVICE_NAME";
+
+    public static final String SETTINGS_EXTRA_EXPLICIT = "org.kustom.weather.extra.EXPLICIT";
+
     @Override
     public void onCreate() {
         super.onCreate();
