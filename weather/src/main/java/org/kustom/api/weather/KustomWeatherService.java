@@ -13,6 +13,10 @@ public abstract class KustomWeatherService extends Service {
 
     public static final String SETTINGS_EXTRA_SERVICE = "org.kustom.weather.extra.SERVICE_NAME";
 
+    public static final String SETTINGS_EXTRA_THEME = "org.kustom.weather.extra.THEME";
+
+    public static final String SETTINGS_EXTRA_ACCENT_COLOR = "org.kustom.weather.extra.ACCENT_COLOR";
+
     public static final String SETTINGS_EXTRA_EXPLICIT = "org.kustom.weather.extra.EXPLICIT";
 
     @Override
