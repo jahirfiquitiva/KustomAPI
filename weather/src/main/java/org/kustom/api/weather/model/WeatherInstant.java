@@ -35,6 +35,7 @@ public class WeatherInstant extends WeatherCondition {
     /**
      * @return termperature in Celsius
      */
+    @Override
     public float getTemperature() {
         return mTemp;
     }

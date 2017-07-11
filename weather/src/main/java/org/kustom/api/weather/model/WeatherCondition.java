@@ -138,4 +138,9 @@ public abstract class WeatherCondition implements Parcelable {
     public void setHumidity(int humidity) {
         mHumidity = humidity;
     }
+
+    /**
+     * @return termperature in celsius
+     */
+    public abstract float getTemperature();
 }

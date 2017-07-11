@@ -5,7 +5,7 @@ import android.os.Parcel;
 import com.google.gson.annotations.SerializedName;
 
 @SuppressWarnings("unused")
-public class WeatherDailyForecast extends WeatherCondition {
+public class WeatherDailyForecast extends WeatherCondition implements WeatherRainInfo {
     @SerializedName("temp_max")
     private float mTempMax = Float.MAX_VALUE;
     @SerializedName("temp_min")
@@ -43,7 +43,8 @@ public class WeatherDailyForecast extends WeatherCondition {
     /**
      * @return average temperature in centigrades
      */
-    public float getTempAvg() {
+    @Override
+    public float getTemperature() {
         return (mTempMin + mTempMax) / 2;
     }
 
@@ -82,6 +83,7 @@ public class WeatherDailyForecast extends WeatherCondition {
     /**
      * @return rain chance in percentage 0-100
      */
+    @Override
     public int getRainChance() {
         return mRainChance;
     }
@@ -98,6 +100,7 @@ public class WeatherDailyForecast extends WeatherCondition {
     /**
      * @return rain precipitations in millimiters
      */
+    @Override
     public float getRain() {
         return mRain;
     }

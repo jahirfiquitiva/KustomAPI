@@ -5,7 +5,7 @@ import android.os.Parcel;
 import com.google.gson.annotations.SerializedName;
 
 @SuppressWarnings("unused")
-public class WeatherHourlyForecast extends WeatherInstant {
+public class WeatherHourlyForecast extends WeatherInstant implements WeatherRainInfo {
     @SerializedName("valid_from")
     private long mValidFrom = 0L;
     @SerializedName("valid_to")
@@ -75,6 +75,7 @@ public class WeatherHourlyForecast extends WeatherInstant {
     /**
      * @return rain chance in percentage 0-100
      */
+    @Override
     public int getRainChance() {
         return mRainChance;
     }
@@ -91,6 +92,7 @@ public class WeatherHourlyForecast extends WeatherInstant {
     /**
      * @return rain precipitations in millimiters
      */
+    @Override
     public float getRain() {
         return mRain;
     }
