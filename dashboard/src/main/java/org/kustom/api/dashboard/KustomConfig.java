@@ -36,7 +36,7 @@ class KustomConfig {
                 "klck",
                 "lockscreens",
                 "org.kustom.lockscreen",
-                "TBD"
+                "org.kustom.lib.editor.LockAdvancedEditorActivity"
         ));
         envs.put("kwch", new Env(
                 "kwch",
