@@ -1,5 +1,6 @@
 package org.kustom.api.dashboard;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -9,16 +10,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.mikepenz.fastadapter.items.AbstractItem;
-import com.mikepenz.fastadapter.utils.ViewHolderFactory;
 
 import java.util.List;
 
 class PresetItem
         extends AbstractItem<PresetItem, PresetItem.ViewHolder>
         implements Comparable<PresetItem> {
-
-    private static final ViewHolderFactory<? extends PresetItem.ViewHolder>
-            FACTORY = new PresetItem.ItemFactory();
 
     private final PresetFile mPresetFile;
 
@@ -51,22 +48,15 @@ class PresetItem
         super.bindView(holder, payloads);
         Context context = holder.itemView.getContext();
         holder.mTitle.setText(mPresetFile.getName());
-        Glide.with(context)
+        Glide.with((Activity) context)
                 .using(new ImageLoader(context))
                 .load(mPresetFile)
                 .into(holder.mPreview);
     }
 
     @Override
-    public ViewHolderFactory<? extends PresetItem.ViewHolder> getFactory() {
-        return FACTORY;
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    protected static class ItemFactory implements ViewHolderFactory<ViewHolder> {
-        public ViewHolder create(View v) {
-            return new ViewHolder(v);
-        }
+    public ViewHolder getViewHolder(View v) {
+        return new ViewHolder(v);
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -76,8 +66,8 @@ class PresetItem
 
         public ViewHolder(View itemView) {
             super(itemView);
-            mTitle = (TextView) itemView.findViewById(R.id.title);
-            mPreview = (ImageView) itemView.findViewById(R.id.preview);
+            mTitle = itemView.findViewById(R.id.title);
+            mPreview = itemView.findViewById(R.id.preview);
         }
     }
 }

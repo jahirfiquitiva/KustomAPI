@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
+import android.view.ContextThemeWrapper;
 
 class ThemeHelper {
 
@@ -21,4 +22,14 @@ class ThemeHelper {
         return context.getResources().getBoolean(R.bool.kustom_dashboard_light_theme)
                 ? R.style.KustomDashboardTheme_Light : R.style.KustomDashboardTheme_Dark;
     }
+
+    static Context getDialogThemedContext(@NonNull Context context) {
+        return new ContextThemeWrapper(
+                context,
+                context.getResources().getBoolean(R.bool.kustom_dashboard_light_theme)
+                        ? R.style.KustomDashboardTheme_Light_Dialog
+                        : R.style.KustomDashboardTheme_Dark_Dialog
+        );
+    }
+
 }

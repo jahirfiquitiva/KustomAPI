@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:layout_margin="8dp"
-    card_view:cardBackgroundColor="?attr/colorPrimaryDark"
+    card_view:cardBackgroundColor="?android:attr/colorPrimaryDark"
     card_view:cardCornerRadius="0dp"
     tools:ignore="RtlHardcoded">
 
@@ -26,9 +26,10 @@
             android:layout_gravity="center_vertical"
             android:ellipsize="marquee"
             android:fadingEdge="horizontal"
-            android:maxLines="1"
+            android:singleLine="true"
             android:text="Pack title"
             android:textAppearance="@android:style/TextAppearance.Medium"
+            android:textColor="?android:attr/textColorPrimary"
             tools:ignore="HardcodedText" />
 
         <ImageView
@@ -36,7 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
-            android:background="?attr/colorPrimary"
+            android:background="?android:attr/colorPrimary"
             android:minHeight="128dp"
             android:scaleType="fitCenter"
             tools:ignore="ContentDescription,RtlHardcoded" />

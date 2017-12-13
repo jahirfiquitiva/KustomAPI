@@ -1,41 +1,37 @@
 package org.kustom.api.dashboard;
 
-import android.content.ComponentName;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
-import android.content.Intent;
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.TabLayout;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toolbar;
 
-import com.mikepenz.fastadapter.IAdapter;
-import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
+import com.astuetz.PagerSlidingTabStrip;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.kustom.api.dashboard.ActivityUtils.hideFromLauncher;
 import static org.kustom.api.dashboard.ActivityUtils.openPkgStoreUri;
 
-public class DashboardActivity
-        extends AppCompatActivity
-        implements TabLayout.OnTabSelectedListener, FastItemAdapter.OnClickListener<PresetItem> {
+public class DashboardActivity extends Activity {
     private final static String TAG = DashboardActivity.class.getSimpleName();
 
-    private RecyclerView mList;
-
-    private final FastItemAdapter<PresetItem> mAdapter = new FastItemAdapter<>();
+    private String[] mActiveEnvs = new String[0];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,34 +41,12 @@ public class DashboardActivity
         setContentView(R.layout.kustom_dashboard_activity);
 
         // Toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.kustom_dashboard_title));
-        setSupportActionBar(toolbar);
-
-        // List
-        mList = (RecyclerView) findViewById(R.id.list);
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        int dpWidth = (int) (displayMetrics.widthPixels / displayMetrics.density);
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(
-                Math.max(2, dpWidth / 180),
-                StaggeredGridLayoutManager.VERTICAL
-        );
-        layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
-        mList.setLayoutManager(layoutManager);
-        mList.setAdapter(mAdapter);
+        setActionBar(toolbar);
 
         // Reload
-        ((TabLayout) findViewById(R.id.tabs)).addOnTabSelectedListener(this);
-        populatePager();
-    }
-
-    @Override
-    public void onTabSelected(TabLayout.Tab tab) {
-        if (tab.getText() != null) {
-            String ext = tab.getText().toString().toLowerCase();
-            KustomConfig.Env env = KustomConfig.getEnv(ext);
-            if (env != null) reload(env.getFiles(this));
-        }
+        new TabLoaderTask().execute();
     }
 
     @Override
@@ -95,26 +69,20 @@ public class DashboardActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_info) {
-            new AlertDialog.Builder(this)
+            Context dialogContext = ThemeHelper.getDialogThemedContext(this);
+            new AlertDialog.Builder(dialogContext)
                     .setTitle(R.string.kustom_pack_title)
                     .setMessage(R.string.kustom_pack_description)
                     .setNegativeButton(android.R.string.cancel, null)
-                    .setPositiveButton(R.string.rate_app, new OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            openPkgStoreUri(DashboardActivity.this, getPackageName());
-                        }
-                    })
-                    .setNeutralButton(R.string.hide_from_launcher, new OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            hideFromLauncher(DashboardActivity.this, getComponentName());
-                            new AlertDialog.Builder(DashboardActivity.this)
-                                    .setTitle(R.string.hide_from_launcher)
-                                    .setMessage(R.string.hide_from_launcher_done)
-                                    .setPositiveButton(android.R.string.ok, null)
-                                    .show();
-                        }
+                    .setPositiveButton(R.string.rate_app, (dialog, which)
+                            -> openPkgStoreUri(dialogContext, getPackageName()))
+                    .setNeutralButton(R.string.hide_from_launcher, (dialog, which) -> {
+                        hideFromLauncher(dialogContext, getComponentName());
+                        new AlertDialog.Builder(dialogContext)
+                                .setTitle(R.string.hide_from_launcher)
+                                .setMessage(R.string.hide_from_launcher_done)
+                                .setPositiveButton(android.R.string.ok, null)
+                                .show();
                     })
                     .show();
             return true;
@@ -122,74 +90,73 @@ public class DashboardActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onTabUnselected(TabLayout.Tab tab) {
-    }
+    @SuppressLint("StaticFieldLeak")
+    private class TabLoaderTask extends AsyncTask<Void, Void, List<String>> {
 
-    @Override
-    public void onTabReselected(TabLayout.Tab tab) {
-    }
-
-    @Override
-    public boolean onClick(View v, IAdapter<PresetItem> adapter, PresetItem item, int position) {
-        KustomConfig.Env env = KustomConfig.getEnv(item.getPresetFile().getExt());
-        if (env == null) throw new RuntimeException("Invalid env");
-        final String pkg = env.getPkg();
-        // Standard presets
-        if (pkg != null) {
-            if (!PackageHelper.packageInstalled(this, pkg)) {
-                new AlertDialog.Builder(this)
-                        .setTitle(R.string.kustom_not_installed)
-                        .setMessage(R.string.kustom_not_installed_desc)
-                        .setNegativeButton(android.R.string.cancel, null)
-                        .setPositiveButton(R.string.install, new OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                openPkgStoreUri(DashboardActivity.this, pkg);
-                            }
-                        })
-                        .show();
-            } else {
-                Intent i = new Intent();
-                i.setComponent(new ComponentName(pkg, env.getEditorActivity()));
-                i.setData(new Uri.Builder()
-                        .scheme("kfile")
-                        .authority(String.format("%s.kustom.provider", getPackageName()))
-                        .appendPath(item.getPresetFile().getPath())
-                        .build());
-                startActivity(i);
-            }
-        }
-        // Komponents
-        else {
-            new AlertDialog.Builder(this)
-                    .setTitle("Komponents")
-                    .setMessage(R.string.komponent_open)
-                    .setPositiveButton(android.R.string.ok, null)
-                    .show();
-        }
-        return true;
-    }
-
-    private void populatePager() {
-        TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
-        for (String ext : KustomConfig.getExtensions()) {
-            KustomConfig.Env env = KustomConfig.getEnv(ext);
-            if (env != null) {
-                if (env.getFiles(this).length > 0) {
-                    tabs.addTab(tabs.newTab().setText(ext.toUpperCase()));
+        @Override
+        protected List<String> doInBackground(Void... voids) {
+            ArrayList<String> envs = new ArrayList<>();
+            for (String ext : KustomConfig.getExtensions()) {
+                KustomConfig.Env env = KustomConfig.getEnv(ext);
+                if (env != null) {
+                    if (env.getFiles(DashboardActivity.this).length > 0) {
+                        envs.add(ext.toUpperCase());
+                    }
                 }
             }
+            return envs;
         }
-        tabs.setVisibility(tabs.getTabCount() == 1 ? View.GONE : View.VISIBLE);
+
+        @Override
+        protected void onPostExecute(List<String> result) {
+            super.onPostExecute(result);
+            mActiveEnvs = result.toArray(new String[result.size()]);
+            ViewPager pager = findViewById(R.id.pager);
+            pager.setAdapter(new KustomEnvPagerAdapter(mActiveEnvs));
+            PagerSlidingTabStrip tabs = findViewById(R.id.tabs);
+            tabs.setViewPager(pager);
+            tabs.setVisibility(mActiveEnvs.length == 1 ? View.GONE : View.VISIBLE);
+        }
     }
 
-    private void reload(@NonNull String[] entries) {
-        mAdapter.clear();
-        for (String entry : entries)
-            mAdapter.add(new PresetItem(new PresetFile(entry)).withOnItemClickListener(this));
-        mList.setVisibility(entries.length > 0 ? View.VISIBLE : View.GONE);
-        findViewById(R.id.text).setVisibility(entries.length > 0 ? View.GONE : View.VISIBLE);
-        findViewById(R.id.progress).setVisibility(View.GONE);
+    private class KustomEnvPagerAdapter extends PagerAdapter {
+        private final String[] mTitles;
+
+        KustomEnvPagerAdapter(String[] titles) {
+            mTitles = titles;
+        }
+
+        @NonNull
+        @Override
+        public Object instantiateItem(@NonNull ViewGroup collection, int position) {
+            LayoutInflater inflater = LayoutInflater.from(DashboardActivity.this);
+            DashboardPage page = (DashboardPage) inflater
+                    .inflate(R.layout.kustom_dashboard_page, collection, false);
+            String ext = mActiveEnvs[position].toLowerCase();
+            KustomConfig.Env env = KustomConfig.getEnv(ext);
+            if (env != null) page.setEntries(env.getFiles(DashboardActivity.this));
+            collection.addView(page);
+            return page;
+        }
+
+        @Override
+        public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+            container.removeView((DashboardPage) object);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mTitles[position];
+        }
+
+        @Override
+        public int getCount() {
+            return mTitles.length;
+        }
+
+        @Override
+        public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
+            return view == object;
+        }
     }
 }
