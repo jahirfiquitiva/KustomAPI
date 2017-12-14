@@ -1,6 +1,5 @@
 package org.kustom.api.dashboard;
 
-import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -17,8 +16,6 @@ import android.widget.FrameLayout;
 import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 import com.mikepenz.fastadapter.listeners.OnClickListener;
-
-import static org.kustom.api.dashboard.ActivityUtils.openPkgStoreUri;
 
 public class DashboardPage extends FrameLayout implements OnClickListener<PresetItem> {
 
@@ -62,13 +59,7 @@ public class DashboardPage extends FrameLayout implements OnClickListener<Preset
         // Standard presets
         if (pkg != null) {
             if (!PackageHelper.packageInstalled(context, pkg)) {
-                new AlertDialog.Builder(ThemeHelper.getDialogThemedContext(context))
-                        .setTitle(R.string.kustom_not_installed)
-                        .setMessage(R.string.kustom_not_installed_desc)
-                        .setNegativeButton(android.R.string.cancel, null)
-                        .setPositiveButton(R.string.install,
-                                (dialog, which) -> openPkgStoreUri(context, pkg))
-                        .show();
+                Dialogs.showAppNotInstalledDialog(context, pkg);
             } else {
                 Intent i = new Intent();
                 i.setComponent(new ComponentName(pkg, env.getEditorActivity()));
@@ -81,14 +72,9 @@ public class DashboardPage extends FrameLayout implements OnClickListener<Preset
             }
         }
         // Komponents
-        else {
-            new AlertDialog.Builder(ThemeHelper.getDialogThemedContext(context))
-                    .setTitle("Komponents")
-                    .setMessage(R.string.komponent_open)
-                    .setPositiveButton(android.R.string.ok, null)
-                    .show();
-        }
+        else Dialogs.showOpenKomponentDialog(context);
         return true;
     }
+
 
 }

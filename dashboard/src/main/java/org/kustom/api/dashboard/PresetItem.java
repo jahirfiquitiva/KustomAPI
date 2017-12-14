@@ -2,13 +2,18 @@ package org.kustom.api.dashboard;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
+import android.support.v7.graphics.Palette;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
 import java.util.List;
@@ -51,7 +56,20 @@ class PresetItem
         Glide.with((Activity) context)
                 .using(new ImageLoader(context))
                 .load(mPresetFile)
-                .into(holder.mPreview);
+                .asBitmap()
+                .into(new BitmapImageViewTarget(holder.mPreview) {
+                    @Override
+                    public void onResourceReady(Bitmap r, GlideAnimation<? super Bitmap> a) {
+                        super.onResourceReady(r, a);
+                        Palette.from(r).generate(palette -> {
+                            Palette.Swatch vibrant = palette.getVibrantSwatch();
+                            if (vibrant != null) {
+                                holder.mTitle.setBackgroundColor(vibrant.getRgb());
+                                holder.mTitle.setTextColor(vibrant.getTitleTextColor());
+                            }
+                        });
+                    }
+                });
     }
 
     @Override

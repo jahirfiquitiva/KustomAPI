@@ -69,22 +69,7 @@ public class DashboardActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_info) {
-            Context dialogContext = ThemeHelper.getDialogThemedContext(this);
-            new AlertDialog.Builder(dialogContext)
-                    .setTitle(R.string.kustom_pack_title)
-                    .setMessage(R.string.kustom_pack_description)
-                    .setNegativeButton(android.R.string.cancel, null)
-                    .setPositiveButton(R.string.rate_app, (dialog, which)
-                            -> openPkgStoreUri(dialogContext, getPackageName()))
-                    .setNeutralButton(R.string.hide_from_launcher, (dialog, which) -> {
-                        hideFromLauncher(dialogContext, getComponentName());
-                        new AlertDialog.Builder(dialogContext)
-                                .setTitle(R.string.hide_from_launcher)
-                                .setMessage(R.string.hide_from_launcher_done)
-                                .setPositiveButton(android.R.string.ok, null)
-                                .show();
-                    })
-                    .show();
+            Dialogs.showInfoDialog(this, getComponentName());
             return true;
         }
         return super.onOptionsItemSelected(item);
