@@ -1,12 +1,14 @@
-package org.kustom.api.dashboard;
+package org.kustom.api.dashboard.utils;
 
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import static org.kustom.api.dashboard.ActivityUtils.hideFromLauncher;
-import static org.kustom.api.dashboard.ActivityUtils.openPkgStoreUri;
+import org.kustom.api.dashboard.R;
+
+import static org.kustom.api.dashboard.utils.ActivityUtils.hideFromLauncher;
+import static org.kustom.api.dashboard.utils.ActivityUtils.openPkgStoreUri;
 
 @SuppressWarnings("WeakerAccess")
 public class Dialogs {

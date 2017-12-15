@@ -1,4 +1,4 @@
-package org.kustom.api.dashboard;
+package org.kustom.api.dashboard.model;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -6,10 +6,10 @@ import android.support.annotation.NonNull;
 import java.io.IOException;
 import java.io.InputStream;
 
-class PresetFile {
+public class PresetFile {
     private final String mFilePath;
 
-    PresetFile(String filePath) {
+    public PresetFile(String filePath) {
         mFilePath = filePath;
     }
 

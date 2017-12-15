@@ -1,4 +1,4 @@
-package org.kustom.api.dashboard;
+package org.kustom.api.dashboard.utils;
 
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
@@ -9,7 +9,10 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
 
-class ActivityUtils {
+public class ActivityUtils {
+
+    private ActivityUtils() {
+    }
 
     static void hideFromLauncher(@NonNull Context context, @NonNull ComponentName componentName) {
         try {

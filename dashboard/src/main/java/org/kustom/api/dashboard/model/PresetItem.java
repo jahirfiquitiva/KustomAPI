@@ -1,11 +1,10 @@
-package org.kustom.api.dashboard;
+package org.kustom.api.dashboard.model;
 
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.graphics.Palette;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,20 +15,22 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
+import org.kustom.api.dashboard.R;
+
 import java.util.List;
 
-class PresetItem
+public class PresetItem
         extends AbstractItem<PresetItem, PresetItem.ViewHolder>
         implements Comparable<PresetItem> {
 
     private final PresetFile mPresetFile;
 
-    PresetItem(@NonNull PresetFile presetFile) {
+    public PresetItem(@NonNull PresetFile presetFile) {
         mPresetFile = presetFile;
     }
 
     @NonNull
-    PresetFile getPresetFile() {
+    public PresetFile getPresetFile() {
         return mPresetFile;
     }
 
@@ -54,7 +55,7 @@ class PresetItem
         Context context = holder.itemView.getContext();
         holder.mTitle.setText(mPresetFile.getName());
         Glide.with((Activity) context)
-                .using(new ImageLoader(context))
+                .using(new PresetImageLoader(context))
                 .load(mPresetFile)
                 .asBitmap()
                 .into(new BitmapImageViewTarget(holder.mPreview) {

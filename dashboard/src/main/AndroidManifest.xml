@@ -4,5 +4,8 @@
 
     <application>
         <activity android:name=".DashboardActivity" />
+        <activity
+            android:name=".ImagePreviewActivity"
+            android:theme="@style/KustomDashboardTheme.Translucent" />
     </application>
 </manifest>

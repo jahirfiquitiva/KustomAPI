@@ -1,4 +1,4 @@
-package org.kustom.api.dashboard;
+package org.kustom.api.dashboard.model;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -13,12 +13,12 @@ import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-class ImageLoader implements StreamModelLoader<PresetFile> {
-    private static final String TAG = ImageLoader.class.getSimpleName();
+class PresetImageLoader implements StreamModelLoader<PresetFile> {
+    private static final String TAG = PresetImageLoader.class.getSimpleName();
 
     private final Context mContext;
 
-    ImageLoader(@NonNull Context context) {
+    PresetImageLoader(@NonNull Context context) {
         mContext = context;
     }
 
