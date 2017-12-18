@@ -40,6 +40,7 @@ public class ImagePreviewActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "Image preview starting");
+        setTheme(R.style.KustomDashboardTheme_Translucent);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.kustom_image_preview_activity);
 

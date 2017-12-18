@@ -5,8 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 
-import org.kustom.api.dashboard.model.ImageData;
-
 import java.io.IOException;
 
 public class WallpaperUtils {
