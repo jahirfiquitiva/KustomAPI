@@ -50,7 +50,7 @@
     <!--
     Translucent background colors used for wallpaper preview background and title
     -->
-    <color name="kustom_translucent_background">#66000000</color>
+    <color name="kustom_translucent_background">#77000000</color>
     <color name="kustom_translucent_background_text">#FFFFFF</color>
 
 </resources>

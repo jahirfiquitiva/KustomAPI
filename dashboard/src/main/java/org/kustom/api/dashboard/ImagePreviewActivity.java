@@ -3,6 +3,7 @@ package org.kustom.api.dashboard;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -85,10 +86,7 @@ public class ImagePreviewActivity extends Activity {
             Drawable icon = menu.getItem(i).getIcon();
             if (icon != null) {
                 icon.mutate();
-                icon.setColorFilter(
-                        ThemeHelper.getThemeColor(this, android.R.attr.textColorPrimary),
-                        PorterDuff.Mode.SRC_ATOP
-                );
+                icon.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
             }
         }
         return true;
