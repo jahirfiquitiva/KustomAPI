@@ -42,10 +42,10 @@
     <!--
     URL to JSON file containing a map of wallpapers if enabled
     Format info can be found at https://kustom.rocks/apkmaker/walls/format
+    Example https://kustom.rocks/apkmaker/walls
     -->
-    <string name="kustom_dashboard_walls_url" formatted="false">
-        https://kustom.rocks/apkmaker/walls
-    </string>
+    <!--suppress CheckTagEmptyBody -->
+    <string name="kustom_dashboard_walls_url" formatted="false"></string>
 
     <!--
     Translucent background colors used for wallpaper preview background and title
