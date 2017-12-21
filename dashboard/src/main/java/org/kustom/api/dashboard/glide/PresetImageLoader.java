@@ -1,4 +1,4 @@
-package org.kustom.api.dashboard.model;
+package org.kustom.api.dashboard.glide;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -8,17 +8,19 @@ import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.data.DataFetcher;
 import com.bumptech.glide.load.model.stream.StreamModelLoader;
 
+import org.kustom.api.dashboard.model.PresetFile;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-class PresetImageLoader implements StreamModelLoader<PresetFile> {
+public class PresetImageLoader implements StreamModelLoader<PresetFile> {
     private static final String TAG = PresetImageLoader.class.getSimpleName();
 
     private final Context mContext;
 
-    PresetImageLoader(@NonNull Context context) {
+    public PresetImageLoader(@NonNull Context context) {
         mContext = context;
     }
 

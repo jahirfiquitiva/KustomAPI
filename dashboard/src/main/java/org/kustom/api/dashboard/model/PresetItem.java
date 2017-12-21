@@ -16,6 +16,7 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
 import org.kustom.api.dashboard.R;
+import org.kustom.api.dashboard.glide.PresetImageLoader;
 
 import java.util.List;
 

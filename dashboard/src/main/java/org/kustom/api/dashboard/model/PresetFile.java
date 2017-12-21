@@ -25,7 +25,7 @@ public class PresetFile {
         return mFilePath.replaceAll("\\.zip", "").replaceAll(".*\\.", "");
     }
 
-    InputStream getStream(@NonNull Context context) throws IOException {
+    public InputStream getStream(@NonNull Context context) throws IOException {
         return context.getAssets().open(mFilePath);
     }
 }
