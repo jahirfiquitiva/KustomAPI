@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,13 +20,12 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.transition.Transition;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.kustom.api.dashboard.model.ImageData;
-import org.kustom.api.dashboard.utils.ThemeHelper;
 import org.kustom.api.dashboard.utils.WallpaperUtils;
 
 import static android.view.View.GONE;
@@ -61,15 +61,15 @@ public class ImagePreviewActivity extends Activity {
             ((TextView) findViewById(R.id.title)).setText(imageData.getTitle());
             ((TextView) findViewById(R.id.author)).setText(imageData.getAuthor());
             Glide.with(this)
-                    .load(imageData.getUrl())
                     .asBitmap()
+                    .load(imageData.getUrl())
                     .into(new BitmapImageViewTarget(findViewById(R.id.image)) {
                         @Override
-                        public void onResourceReady(Bitmap r, GlideAnimation<? super Bitmap> a) {
+                        public void onResourceReady(Bitmap r, @Nullable Transition<? super Bitmap> t) {
                             mBitmap = r;
                             findViewById(R.id.text).setVisibility(GONE);
                             findViewById(R.id.progress).setVisibility(GONE);
-                            super.onResourceReady(r, a);
+                            super.onResourceReady(r, t);
                         }
                     });
         } catch (JSONException e) {

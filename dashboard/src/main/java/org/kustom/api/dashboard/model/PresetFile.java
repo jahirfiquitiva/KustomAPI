@@ -28,4 +28,9 @@ public class PresetFile {
     public InputStream getStream(@NonNull Context context) throws IOException {
         return context.getAssets().open(mFilePath);
     }
+
+    @Override
+    public String toString() {
+        return mFilePath;
+    }
 }

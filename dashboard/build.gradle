@@ -14,10 +14,10 @@ dependencies {
     implementation 'com.mikepenz:fastadapter-commons:3.0.3@aar'
     implementation 'com.jpardogo.materialtabstrip:library:1.1.1'
     implementation 'com.squareup.okhttp3:okhttp:3.9.1'
-    //noinspection GradleDependency
-    implementation('com.github.bumptech.glide:glide:3.8.0') {
+    implementation('com.github.bumptech.glide:glide:4.4.0') {
         exclude module: 'support-fragment'
     }
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.4.0'
 }
 
 android {
@@ -29,6 +29,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 3
         versionName "0.3"
+        consumerProguardFiles "proguard-rules.txt"
     }
 
     buildTypes {

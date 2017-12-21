@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -11,12 +12,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
 import org.kustom.api.dashboard.R;
-import org.kustom.api.dashboard.glide.PresetImageLoader;
 
 import java.util.List;
 
@@ -56,13 +56,12 @@ public class PresetItem
         Context context = holder.itemView.getContext();
         holder.mTitle.setText(mPresetFile.getName());
         Glide.with((Activity) context)
-                .using(new PresetImageLoader(context))
-                .load(mPresetFile)
                 .asBitmap()
+                .load(mPresetFile)
                 .into(new BitmapImageViewTarget(holder.mPreview) {
                     @Override
-                    public void onResourceReady(Bitmap r, GlideAnimation<? super Bitmap> a) {
-                        super.onResourceReady(r, a);
+                    public void onResourceReady(Bitmap r, @Nullable Transition<? super Bitmap> t) {
+                        super.onResourceReady(r, t);
                         Palette.from(r).generate(palette -> {
                             Palette.Swatch vibrant = palette.getVibrantSwatch();
                             if (vibrant != null) {
