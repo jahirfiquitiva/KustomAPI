@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:minWidth="320dp"
+    android:orientation="vertical"
+    android:paddingTop="24dp"
+    android:paddingBottom="16dp"
+    android:paddingLeft="32dp"
+    android:paddingRight="32dp"
+    tools:ignore="RtlHardcoded">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:ellipsize="marquee"
+        android:fadingEdge="horizontal"
+        android:paddingBottom="16dp"
+        android:singleLine="true"
+        android:textAppearance="@android:style/TextAppearance.Large"
+        android:textColor="?android:attr/textColorPrimary"
+        tools:text="Dialog Title" />
+
+    <TextView
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:ellipsize="marquee"
+        android:fadingEdge="horizontal"
+        android:paddingBottom="32dp"
+        android:textAppearance="@android:style/TextAppearance.Small"
+        android:textColor="?android:attr/textColorSecondary"
+        tools:text="Dialog Text Content" />
+
+    <Button
+        android:id="@+id/button_positive"
+        style="@android:style/Widget.Material.Button.Borderless.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:ellipsize="marquee"
+        android:fadingEdge="horizontal"
+        android:gravity="right"
+        android:singleLine="true"
+        android:textColor="?android:attr/colorAccent"
+        tools:text="OK" />
+
+    <Button
+        android:id="@+id/button_neutral"
+        style="@android:style/Widget.Material.Button.Borderless.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:ellipsize="marquee"
+        android:fadingEdge="horizontal"
+        android:gravity="right"
+        android:singleLine="true"
+        android:textColor="?android:attr/colorAccent"
+        tools:text="BOH" />
+
+    <Button
+        android:id="@+id/button_negative"
+        style="@android:style/Widget.Material.Button.Borderless.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:ellipsize="marquee"
+        android:fadingEdge="horizontal"
+        android:gravity="right"
+        android:singleLine="true"
+        android:textColor="?android:attr/colorAccent"
+        tools:text="CANCEL" />
+</LinearLayout>
