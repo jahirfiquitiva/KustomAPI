@@ -48,7 +48,7 @@ public class DashboardActivity extends Activity {
         setActionBar(toolbar);
 
         // Reload
-        new TabLoaderTask().execute();
+        new TabLoaderTask(DashboardSettings.get(this).getLastPageIndex()).execute();
     }
 
     @Override
@@ -73,12 +73,33 @@ public class DashboardActivity extends Activity {
         if (item.getItemId() == R.id.menu_info) {
             Dialogs.showInfoDialog(this, getComponentName());
             return true;
+        } else if (item.getItemId() == R.id.menu_compact) {
+            DashboardSettings settings = DashboardSettings.get(this);
+            settings.setCompactView(!settings.useCompactView());
+            new TabLoaderTask(getCurrentPageIndex()).execute();
         }
         return super.onOptionsItemSelected(item);
     }
 
+
+    @Override
+    protected void onPause() {
+        DashboardSettings.get(this).setLastPageIndex(getCurrentPageIndex());
+        super.onPause();
+    }
+
+    private int getCurrentPageIndex() {
+        ViewPager pager = findViewById(R.id.pager);
+        return pager != null ? pager.getCurrentItem() : 0;
+    }
+
     @SuppressLint("StaticFieldLeak")
     private class TabLoaderTask extends AsyncTask<Void, Void, DashboardTab[]> {
+        private final int mDefaultPage;
+
+        TabLoaderTask(int defaultPage) {
+            mDefaultPage = defaultPage;
+        }
 
         @Override
         protected DashboardTab[] doInBackground(Void... voids) {
@@ -113,7 +134,7 @@ public class DashboardActivity extends Activity {
                     && tabs.length > 0 && tabs[tabs.length - 1] instanceof DashboardImagesTab
                     && Intent.ACTION_SET_WALLPAPER.equals(getIntent().getAction())) {
                 pager.setCurrentItem(tabs.length - 1);
-            }
+            } else pager.setCurrentItem(Math.max(0, Math.min(mDefaultPage, tabs.length - 1)));
         }
     }
 

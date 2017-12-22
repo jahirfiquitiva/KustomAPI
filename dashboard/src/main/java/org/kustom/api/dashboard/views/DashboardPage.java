@@ -16,6 +16,7 @@ import com.mikepenz.fastadapter.IItem;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 import com.mikepenz.fastadapter.listeners.OnClickListener;
 
+import org.kustom.api.dashboard.DashboardSettings;
 import org.kustom.api.dashboard.R;
 
 import java.util.List;
@@ -65,10 +66,11 @@ public abstract class DashboardPage<T extends IItem>
     }
 
     private RecyclerView.LayoutManager getDefaultLayoutManager() {
+        boolean compact = DashboardSettings.get(getContext()).useCompactView();
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         int dpWidth = (int) (displayMetrics.widthPixels / displayMetrics.density);
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(
-                Math.max(2, dpWidth / 180),
+                Math.max(compact ? 3 : 2, dpWidth / (compact ? 120 : 180)),
                 StaggeredGridLayoutManager.VERTICAL
         );
         layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);

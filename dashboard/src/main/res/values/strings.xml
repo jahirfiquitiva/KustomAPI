@@ -2,6 +2,7 @@
 <resources>
     <string name="install">Install</string>
     <string name="info">Info</string>
+    <string name="compact">Compact</string>
     <string name="apply">Apply</string>
     <string name="no_results">No results</string>
     <string name="komponent_open">In order to add a Komponent open Kustom and press + on the editor ToolBar, then select Komponent and find this pack</string>

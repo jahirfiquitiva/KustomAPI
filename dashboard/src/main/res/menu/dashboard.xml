@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_compact"
+        android:icon="@drawable/ic_carousel"
+        android:showAsAction="always"
+        android:title="@string/compact"
+        tools:ignore="AlwaysShowAction" />
     <item
         android:id="@+id/menu_info"
         android:icon="@drawable/ic_info"

@@ -37,6 +37,7 @@ public abstract class DashboardItem<Item extends IItem & IClickable>
     protected static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView mTitle;
         private final TextView mAuthor;
+        private final View mBottomPadding;
         protected final ImageView mPreview;
 
         public ViewHolder(View itemView) {
@@ -44,17 +45,19 @@ public abstract class DashboardItem<Item extends IItem & IClickable>
             mTitle = itemView.findViewById(R.id.title);
             mAuthor = itemView.findViewById(R.id.author);
             mPreview = itemView.findViewById(R.id.preview);
+            mBottomPadding = itemView.findViewById(R.id.padding);
         }
 
         final void onBitmapSet(Bitmap bitmap) {
             if (DashboardSettings.get(itemView.getContext()).dynamicItemsColors()) {
                 Palette.from(bitmap).generate(palette -> {
-                    Palette.Swatch vibrant = palette.getVibrantSwatch();
-                    if (vibrant != null) {
-                        mTitle.setBackgroundColor(vibrant.getRgb());
-                        mTitle.setTextColor(vibrant.getBodyTextColor());
-                        mAuthor.setBackgroundColor(vibrant.getRgb());
-                        mAuthor.setTextColor(vibrant.getTitleTextColor());
+                    Palette.Swatch muted = palette.getMutedSwatch();
+                    if (muted != null) {
+                        mTitle.setBackgroundColor(muted.getRgb());
+                        mTitle.setTextColor(muted.getBodyTextColor());
+                        mAuthor.setBackgroundColor(muted.getRgb());
+                        mAuthor.setTextColor(muted.getTitleTextColor());
+                        mBottomPadding.setBackgroundColor(muted.getRgb());
                     }
                 });
             }
