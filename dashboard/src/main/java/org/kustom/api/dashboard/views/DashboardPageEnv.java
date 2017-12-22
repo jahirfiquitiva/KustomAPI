@@ -10,7 +10,7 @@ import org.kustom.api.dashboard.config.KustomEnv;
 import org.kustom.api.dashboard.utils.Dialogs;
 import org.kustom.api.dashboard.config.KustomConfig;
 import org.kustom.api.dashboard.model.PresetItem;
-import org.kustom.api.dashboard.model.PresetFile;
+import org.kustom.api.dashboard.preset.PresetFile;
 import org.kustom.api.dashboard.utils.PackageHelper;
 
 import java.util.ArrayList;

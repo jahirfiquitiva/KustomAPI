@@ -8,7 +8,7 @@ import com.bumptech.glide.Registry;
 import com.bumptech.glide.annotation.GlideModule;
 import com.bumptech.glide.module.LibraryGlideModule;
 
-import org.kustom.api.dashboard.model.PresetFile;
+import org.kustom.api.dashboard.preset.PresetFile;
 
 import java.io.InputStream;
 

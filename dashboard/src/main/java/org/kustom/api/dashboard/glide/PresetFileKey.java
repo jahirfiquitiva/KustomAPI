@@ -2,7 +2,7 @@ package org.kustom.api.dashboard.glide;
 
 import com.bumptech.glide.load.Key;
 
-import org.kustom.api.dashboard.model.PresetFile;
+import org.kustom.api.dashboard.preset.PresetFile;
 
 import java.security.MessageDigest;
 

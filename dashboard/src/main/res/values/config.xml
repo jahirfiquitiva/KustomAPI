@@ -36,6 +36,9 @@
     <color name="kustom_dashboard_dark_primary_text_inverted">#303030</color>
     <color name="kustom_dashboard_dark_secondary_text_inverted">#505050</color>
 
+    <!-- Enable or disable dynamic colors for the title and author in the preset / walls list -->
+    <bool name="kustom_dashboard_adaptive_item_color">true</bool>
+
     <!-- Enable or disable Wallpapers support -->
     <bool name="kustom_dashboard_walls">false</bool>
 
@@ -51,6 +54,7 @@
     Translucent background colors used for wallpaper preview background and title
     -->
     <color name="kustom_translucent_background">#66000000</color>
-    <color name="kustom_translucent_background_text">#FFFFFF</color>
+    <color name="kustom_translucent_background_text_primary">#FFFFFF</color>
+    <color name="kustom_translucent_background_text_secondary">#DDDDDD</color>
 
 </resources>

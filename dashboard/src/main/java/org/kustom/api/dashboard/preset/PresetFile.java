@@ -1,4 +1,4 @@
-package org.kustom.api.dashboard.model;
+package org.kustom.api.dashboard.preset;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

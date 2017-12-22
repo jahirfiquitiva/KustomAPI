@@ -44,7 +44,7 @@ public class DashboardActivity extends Activity {
 
         // Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle(getString(R.string.kustom_dashboard_title));
+        toolbar.setTitle(DashboardSettings.get(this).dashboardTitle());
         setActionBar(toolbar);
 
         // Reload
@@ -83,6 +83,7 @@ public class DashboardActivity extends Activity {
         @Override
         protected DashboardTab[] doInBackground(Void... voids) {
             ArrayList<DashboardTab> envs = new ArrayList<>();
+            DashboardSettings settings = DashboardSettings.get(DashboardActivity.this);
             for (String ext : KustomConfig.getExtensions()) {
                 KustomEnv env = KustomConfig.getEnv(ext);
                 if (env != null) {
@@ -91,8 +92,8 @@ public class DashboardActivity extends Activity {
                     }
                 }
             }
-            if (getResources().getBoolean(R.bool.kustom_dashboard_walls)) {
-                String url = getString(R.string.kustom_dashboard_walls_url);
+            if (settings.wallsEnabled()) {
+                String url = settings.wallsUrl();
                 if (!TextUtils.isEmpty(url.trim())) {
                     envs.add(new DashboardImagesTab("WALLS", url));
                 }

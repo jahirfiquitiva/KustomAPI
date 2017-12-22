@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import com.bumptech.glide.load.Options;
 import com.bumptech.glide.load.model.ModelLoader;
 
-import org.kustom.api.dashboard.model.PresetFile;
+import org.kustom.api.dashboard.preset.PresetFile;
 
 import java.io.InputStream;
 

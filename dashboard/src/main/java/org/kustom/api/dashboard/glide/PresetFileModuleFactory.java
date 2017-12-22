@@ -6,7 +6,7 @@ import com.bumptech.glide.load.model.ModelLoader;
 import com.bumptech.glide.load.model.ModelLoaderFactory;
 import com.bumptech.glide.load.model.MultiModelLoaderFactory;
 
-import org.kustom.api.dashboard.model.PresetFile;
+import org.kustom.api.dashboard.preset.PresetFile;
 
 import java.io.InputStream;
 

@@ -69,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="@color/kustom_translucent_background_text"
+                android:textColor="@color/kustom_translucent_background_text_primary"
                 tools:text="Image Title" />
 
             <TextView
@@ -78,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="@color/kustom_translucent_background_text"
+                android:textColor="@color/kustom_translucent_background_text_secondary"
                 tools:text="Image Author" />
         </LinearLayout>
     </RelativeLayout>

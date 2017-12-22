@@ -55,10 +55,10 @@
         <item name="android:windowActionModeOverlay">true</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
-        <item name="android:colorAccent">@color/kustom_translucent_background_text</item>
-        <item name="android:textColorPrimary">@color/kustom_translucent_background_text</item>
-        <item name="android:textColorSecondary">@color/kustom_translucent_background_text</item>
-        <item name="android:textColorTertiary">@color/kustom_translucent_background_text</item>
+        <item name="android:colorAccent">@color/kustom_translucent_background_text_primary</item>
+        <item name="android:textColorPrimary">@color/kustom_translucent_background_text_primary</item>
+        <item name="android:textColorSecondary">@color/kustom_translucent_background_text_primary</item>
+        <item name="android:textColorTertiary">@color/kustom_translucent_background_text_primary</item>
         <item name="android:colorPrimary">@color/kustom_translucent_background</item>
         <item name="android:colorPrimaryDark">@color/kustom_translucent_background</item>
         <item name="android:statusBarColor">@color/kustom_translucent_background</item>
