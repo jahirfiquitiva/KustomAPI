@@ -1,4 +1,4 @@
-package org.kustom.api.dashboard.preset;
+package org.kustom.api.preset;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,6 +9,11 @@ import java.io.InputStream;
 public class PresetFile {
     private final String mFilePath;
 
+    /**
+     * Build a preset file according to its relative path in the assets
+     *
+     * @param filePath the path in the assets folder, es "widgets/awezome.kwgt"
+     */
     public PresetFile(String filePath) {
         mFilePath = filePath;
     }

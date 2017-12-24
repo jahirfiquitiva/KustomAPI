@@ -9,8 +9,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.transition.Transition;
 
-import org.kustom.api.dashboard.preset.PresetFile;
-import org.kustom.api.dashboard.preset.PresetInfoLoader;
+import org.kustom.api.preset.PresetFile;
+import org.kustom.api.preset.PresetInfo;
+import org.kustom.api.preset.PresetInfoLoader;
 
 import java.util.List;
 
@@ -47,9 +48,12 @@ public class PresetItem extends DashboardItem<PresetItem> implements Comparable<
                     }
                 });
         PresetInfoLoader.create(mPresetFile)
-                .load(context, info -> {
-                    holder.setTitle(info.getTitle());
-                    holder.setAuthor(info.getAuthor());
+                .load(context, new PresetInfoLoader.Callback() {
+                    @Override
+                    public void onInfoLoaded(PresetInfo info) {
+                        holder.setTitle(info.getTitle());
+                        holder.setAuthor(info.getAuthor());
+                    }
                 });
     }
 }

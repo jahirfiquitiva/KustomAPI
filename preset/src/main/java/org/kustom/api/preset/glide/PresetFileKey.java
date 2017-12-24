@@ -1,8 +1,8 @@
-package org.kustom.api.dashboard.glide;
+package org.kustom.api.preset.glide;
 
 import com.bumptech.glide.load.Key;
 
-import org.kustom.api.dashboard.preset.PresetFile;
+import org.kustom.api.preset.PresetFile;
 
 import java.security.MessageDigest;
 
@@ -30,6 +30,6 @@ public class PresetFileKey implements Key {
 
     @Override
     public void updateDiskCacheKey(MessageDigest messageDigest) {
-        messageDigest.update(mPath.getBytes(CHARSET));
+        messageDigest.update(mPath.getBytes(Key.CHARSET));
     }
 }

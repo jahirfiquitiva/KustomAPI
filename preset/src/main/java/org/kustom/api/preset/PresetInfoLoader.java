@@ -1,4 +1,4 @@
-package org.kustom.api.dashboard.preset;
+package org.kustom.api.preset;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+@SuppressWarnings("unused")
 public class PresetInfoLoader {
     private final static HashMap<String, PresetInfo> sPresetInfoCache = new HashMap<>();
     private final PresetFile mFile;

@@ -97,7 +97,7 @@ public class Provider extends ContentProvider {
             if (lastUpgradedRelease != currentRelease) {
                 Log.i(TAG, "Clearing cache after upgrade");
                 CacheHelper.clearCache(getContext(), "provider");
-                sp.edit().putInt(PREF_LAST_UPGRADE, currentRelease).commit();
+                sp.edit().putInt(PREF_LAST_UPGRADE, currentRelease).apply();
             }
         } catch (Exception e) {
             Log.e(TAG, "Unable to check for upgrade", e);

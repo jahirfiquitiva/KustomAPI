@@ -1,4 +1,4 @@
-package org.kustom.api.dashboard.glide;
+package org.kustom.api.preset.glide;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -7,7 +7,7 @@ import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.data.DataFetcher;
 
-import org.kustom.api.dashboard.preset.PresetFile;
+import org.kustom.api.preset.PresetFile;
 
 import java.io.IOException;
 import java.io.InputStream;
