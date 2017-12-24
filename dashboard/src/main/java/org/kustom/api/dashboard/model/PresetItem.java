@@ -48,12 +48,9 @@ public class PresetItem extends DashboardItem<PresetItem> implements Comparable<
                     }
                 });
         PresetInfoLoader.create(mPresetFile)
-                .load(context, new PresetInfoLoader.Callback() {
-                    @Override
-                    public void onInfoLoaded(PresetInfo info) {
-                        holder.setTitle(info.getTitle());
-                        holder.setAuthor(info.getAuthor());
-                    }
+                .load(context, info -> {
+                    holder.setTitle(info.getTitle());
+                    holder.setAuthor(info.getAuthor());
                 });
     }
 }
