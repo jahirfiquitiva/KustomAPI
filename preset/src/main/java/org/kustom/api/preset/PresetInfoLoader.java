@@ -71,12 +71,13 @@ public class PresetInfoLoader {
                 else throw new IOException("Preset info not found");
             } catch (Exception e) {
                 e.printStackTrace();
-                return new PresetInfo(mFile.getName());
+                return null;
             }
         }
 
         @Override
         protected void onPostExecute(PresetInfo result) {
+            if (result == null) result = new PresetInfo(mFile.getName());
             synchronized (sPresetInfoCache) {
                 sPresetInfoCache.put(mFile.getPath(), result);
                 mCallback.onInfoLoaded(result);

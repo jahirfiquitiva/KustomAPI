@@ -1,7 +1,0 @@
-ext {
-    buildToolsVersion = "26.0.2"
-    compileSdkVersion = 26
-    targetSdkVersion = 25
-    supportLibVersion = "27.0.2"
-    glideVersion = "4.4.0"
-}

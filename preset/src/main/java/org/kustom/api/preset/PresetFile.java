@@ -6,36 +6,41 @@ import android.support.annotation.NonNull;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class PresetFile {
-    private final String mFilePath;
+@SuppressWarnings("WeakerAccess")
+public abstract class PresetFile {
+    private final String mName;
+    private final String mExt;
 
-    /**
-     * Build a preset file according to its relative path in the assets
-     *
-     * @param filePath the path in the assets folder, es "widgets/awezome.kwgt"
-     */
-    public PresetFile(String filePath) {
-        mFilePath = filePath;
+    @SuppressWarnings("WeakerAccess")
+    public PresetFile(String name, String ext) {
+        mName = name;
+        mExt = ext;
     }
 
     public String getName() {
-        return mFilePath.replaceAll(".*\\/", "").replaceAll("\\..*", "");
-    }
-
-    public String getPath() {
-        return mFilePath;
+        return mName;
     }
 
     public String getExt() {
-        return mFilePath.replaceAll("\\.zip", "").replaceAll(".*\\.", "");
+        return mExt;
     }
 
-    public InputStream getStream(@NonNull Context context) throws IOException {
-        return context.getAssets().open(mFilePath);
-    }
+    public abstract String getPath();
+
+    public abstract InputStream getStream(@NonNull Context context) throws IOException;
 
     @Override
     public String toString() {
-        return mFilePath;
+        return String.format("%s.%s", mName, mExt);
+    }
+
+    protected static String extractNameFromPath(@NonNull String path) {
+        return path.replaceAll(".*\\/", "")
+                .replaceAll("\\..*", "");
+    }
+
+    protected static String extractExtFromPath(@NonNull String path) {
+        return path.replaceAll("\\.zip", "")
+                .replaceAll(".*\\.", "");
     }
 }

@@ -6,29 +6,30 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
-import org.kustom.api.dashboard.config.KustomEnv;
-import org.kustom.api.dashboard.utils.Dialogs;
 import org.kustom.api.dashboard.config.KustomConfig;
-import org.kustom.api.dashboard.model.PresetItem;
-import org.kustom.api.preset.PresetFile;
+import org.kustom.api.dashboard.config.KustomEnv;
+import org.kustom.api.dashboard.model.DashboardPresetItem;
+import org.kustom.api.dashboard.utils.Dialogs;
 import org.kustom.api.dashboard.utils.PackageHelper;
+import org.kustom.api.preset.AssetPresetFile;
 
 import java.util.ArrayList;
 
-public class DashboardPageEnv extends DashboardPage<PresetItem> {
+public class DashboardPageEnv extends DashboardPage<DashboardPresetItem> {
 
     public DashboardPageEnv(@NonNull Context context) {
         super(context);
     }
 
     public void setEntries(String[] entries) {
-        ArrayList<PresetItem> items = new ArrayList<>();
-        for (String entry : entries) items.add(new PresetItem(new PresetFile(entry)));
+        ArrayList<DashboardPresetItem> items = new ArrayList<>();
+        for (String entry : entries)
+            items.add(new DashboardPresetItem(new AssetPresetFile(entry), getScreenRatio()));
         setEntries(items);
     }
 
     @Override
-    protected boolean onClick(PresetItem item) {
+    protected boolean onClick(DashboardPresetItem item) {
         final Context context = getContext();
         KustomEnv env = KustomConfig.getEnv(item.getPresetFile().getExt());
         if (env == null) throw new RuntimeException("Invalid env");

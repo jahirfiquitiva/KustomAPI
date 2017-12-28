@@ -24,9 +24,12 @@ import java.util.List;
 public abstract class DashboardPage<T extends IItem>
         extends FrameLayout
         implements OnClickListener<T> {
+    private final float mScreenRatio;
 
     public DashboardPage(@NonNull Context context) {
         super(context);
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        mScreenRatio = (float) metrics.heightPixels / (float) metrics.widthPixels;
         inflate(getContext(), R.layout.kustom_dashboard_page, this);
     }
 
@@ -63,6 +66,10 @@ public abstract class DashboardPage<T extends IItem>
             findViewById(R.id.progress).setVisibility(GONE);
             ((TextView) findViewById(R.id.text)).setText(text);
         });
+    }
+
+    protected final float getScreenRatio() {
+        return mScreenRatio;
     }
 
     private RecyclerView.LayoutManager getDefaultLayoutManager() {

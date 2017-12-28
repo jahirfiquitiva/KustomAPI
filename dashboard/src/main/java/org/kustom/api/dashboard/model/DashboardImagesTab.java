@@ -2,6 +2,7 @@ package org.kustom.api.dashboard.model;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.DisplayMetrics;
 import android.view.View;
 
 import org.kustom.api.dashboard.views.DashboardPageImages;

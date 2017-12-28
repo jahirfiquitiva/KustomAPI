@@ -4,12 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.kustom.api.dashboard.ImagePreviewActivity;
-import org.kustom.api.dashboard.model.ImageItem;
+import org.kustom.api.dashboard.model.DashboardImageItem;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,8 +22,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-public class DashboardPageImages extends DashboardPage<ImageItem> {
-    private final OkHttpClient client = new OkHttpClient();
+public class DashboardPageImages extends DashboardPage<DashboardImageItem> {
+    private final OkHttpClient mHttpClient = new OkHttpClient();
 
     public DashboardPageImages(@NonNull Context context) {
         super(context);
@@ -30,7 +31,7 @@ public class DashboardPageImages extends DashboardPage<ImageItem> {
 
     public void setUrl(String url) {
         Request request = new Request.Builder().url(url).build();
-        client.newCall(request).enqueue(new Callback() {
+        mHttpClient.newCall(request).enqueue(new Callback() {
 
             @Override
             public void onFailure(Call call, IOException e) {
@@ -40,7 +41,7 @@ public class DashboardPageImages extends DashboardPage<ImageItem> {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                ArrayList<ImageItem> list = new ArrayList<>();
+                ArrayList<DashboardImageItem> list = new ArrayList<>();
                 try (ResponseBody responseBody = response.body()) {
                     if (!response.isSuccessful())
                         throw new IOException("Unexpected code " + response);
@@ -51,7 +52,7 @@ public class DashboardPageImages extends DashboardPage<ImageItem> {
                         JSONObject data = new JSONObject(body);
                         JSONArray walls = data.getJSONArray("wallpapers");
                         for (int i = 0; i < walls.length(); i++) {
-                            list.add(new ImageItem(walls.getJSONObject(i)));
+                            list.add(new DashboardImageItem(walls.getJSONObject(i), getScreenRatio()));
                         }
                     } catch (JSONException e) {
                         throw new IOException("Invalid JSON " + e.getMessage());
@@ -65,7 +66,7 @@ public class DashboardPageImages extends DashboardPage<ImageItem> {
     }
 
     @Override
-    public boolean onClick(ImageItem item) {
+    public boolean onClick(DashboardImageItem item) {
         Intent intent = new Intent(getContext(), ImagePreviewActivity.class);
         intent.putExtra(ImagePreviewActivity.EXTRA_IMAGE_DATA, item.getImageData().getJsonData());
         getContext().startActivity(intent);

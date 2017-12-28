@@ -8,6 +8,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.util.ArrayList;
 
+@SuppressWarnings("WeakerAccess")
 public class KustomEnv {
     private final static String TAG = KustomEnv.class.getSimpleName();
 

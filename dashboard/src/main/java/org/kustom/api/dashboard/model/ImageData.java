@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+@SuppressWarnings("WeakerAccess")
 public class ImageData {
     private final String mJsonData;
     private final String mTitle;

@@ -38,6 +38,7 @@ public class PresetFileDataFetcher implements DataFetcher<InputStream> {
             }
             throw new IOException("Thumbnail not found");
         } catch (Exception e) {
+            e.printStackTrace();
             callback.onLoadFailed(e);
         }
     }

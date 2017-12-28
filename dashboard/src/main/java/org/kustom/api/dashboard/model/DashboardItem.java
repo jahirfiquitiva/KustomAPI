@@ -1,11 +1,10 @@
 package org.kustom.api.dashboard.model;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mikepenz.fastadapter.IClickable;
@@ -14,9 +13,15 @@ import com.mikepenz.fastadapter.items.AbstractItem;
 
 import org.kustom.api.dashboard.DashboardSettings;
 import org.kustom.api.dashboard.R;
+import org.kustom.api.dashboard.views.AspectRatioImageView;
 
 public abstract class DashboardItem<Item extends IItem & IClickable>
         extends AbstractItem<Item, DashboardItem.ViewHolder> {
+    private final float mScreenRatio;
+
+    DashboardItem(float screenRatio) {
+        mScreenRatio = screenRatio;
+    }
 
     @Override
     public final int getType() {
@@ -24,40 +29,53 @@ public abstract class DashboardItem<Item extends IItem & IClickable>
     }
 
     @Override
-    public final int getLayoutRes() {
-        return R.layout.kustom_dashboard_list_item;
+    public final ViewHolder getViewHolder(View v) {
+        ViewHolder holder = new ViewHolder(v);
+        int padding = (int) getImageViewPadding(holder.itemView.getContext());
+        holder.mInfo.setAlpha(hasTranslucentInfo() ? 0.8f : 1.0f);
+        holder.mPreview.setPadding(padding, padding, padding, padding);
+        holder.mPreview.setAspectRatio(getImageViewRatio());
+        return holder;
     }
 
-    @Override
-    public final ViewHolder getViewHolder(View v) {
-        return new ViewHolder(v);
+    boolean hasTranslucentInfo() {
+        return true;
+    }
+
+    float getImageViewRatio() {
+        return mScreenRatio;
+    }
+
+    float getImageViewPadding(Context context) {
+        return 0;
     }
 
     @SuppressWarnings("WeakerAccess")
     protected static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView mTitle;
         private final TextView mAuthor;
-        private final View mBottomPadding;
-        protected final ImageView mPreview;
+        private final View mInfo;
+        protected final AspectRatioImageView mBackground;
+        protected final AspectRatioImageView mPreview;
 
         public ViewHolder(View itemView) {
             super(itemView);
             mTitle = itemView.findViewById(R.id.title);
             mAuthor = itemView.findViewById(R.id.author);
             mPreview = itemView.findViewById(R.id.preview);
-            mBottomPadding = itemView.findViewById(R.id.padding);
+            mInfo = itemView.findViewById(R.id.info);
+            mBackground = itemView.findViewById(R.id.background);
         }
 
-        final void onBitmapSet(Bitmap bitmap) {
-            if (DashboardSettings.get(itemView.getContext()).dynamicItemsColors()) {
+        final void onBitmapSet(Bitmap bitmap, boolean ignorePalette) {
+            Context context = itemView.getContext();
+            if (!ignorePalette && DashboardSettings.get(context).dynamicItemsColors()) {
                 Palette.from(bitmap).generate(palette -> {
                     Palette.Swatch muted = palette.getMutedSwatch();
                     if (muted != null) {
-                        mTitle.setBackgroundColor(muted.getRgb());
+                        mInfo.setBackgroundColor(muted.getRgb());
                         mTitle.setTextColor(muted.getBodyTextColor());
-                        mAuthor.setBackgroundColor(muted.getRgb());
                         mAuthor.setTextColor(muted.getTitleTextColor());
-                        mBottomPadding.setBackgroundColor(muted.getRgb());
                     }
                 });
             }
@@ -69,7 +87,6 @@ public abstract class DashboardItem<Item extends IItem & IClickable>
 
         final void setAuthor(String text) {
             mAuthor.setText(text);
-            mAuthor.setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
         }
     }
 }

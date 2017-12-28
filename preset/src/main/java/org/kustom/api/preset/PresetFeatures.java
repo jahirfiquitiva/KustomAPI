@@ -51,6 +51,8 @@ public class PresetFeatures {
 
     /**
      * Build from string array
+     *
+     * @param flags to start building this
      */
     public PresetFeatures(@NonNull String flags) {
         this(true);
@@ -122,6 +124,7 @@ public class PresetFeatures {
      * Add a flag to current BitMask
      *
      * @param flag the flag to add
+     * @return this
      */
     public PresetFeatures add(int flag) {
         if (mIsMutable) mFlags = mFlags | flag;

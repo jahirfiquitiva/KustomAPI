@@ -9,48 +9,50 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.transition.Transition;
 
-import org.kustom.api.preset.PresetFile;
-import org.kustom.api.preset.PresetInfo;
-import org.kustom.api.preset.PresetInfoLoader;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.kustom.api.dashboard.R;
 
 import java.util.List;
 
-public class PresetItem extends DashboardItem<PresetItem> implements Comparable<PresetItem> {
-    private final PresetFile mPresetFile;
+public class DashboardImageItem extends DashboardItem<DashboardImageItem> {
+    private final ImageData mImageData;
 
-    public PresetItem(@NonNull PresetFile presetFile) {
-        mPresetFile = presetFile;
+    public DashboardImageItem(@NonNull JSONObject image, float screenRatio) throws JSONException {
+        super(screenRatio);
+        mImageData = new ImageData(image);
     }
 
-    @NonNull
-    public PresetFile getPresetFile() {
-        return mPresetFile;
+    public ImageData getImageData() {
+        return mImageData;
     }
 
     @Override
-    public int compareTo(@NonNull PresetItem o) {
-        return mPresetFile.getName().compareTo(o.mPresetFile.getName());
+    public int getLayoutRes() {
+        return R.layout.kustom_dashboard_list_item_wallpaper;
+    }
+
+    @Override
+    boolean hasTranslucentInfo() {
+        return true;
     }
 
     @Override
     public void bindView(ViewHolder holder, List<Object> payloads) {
         super.bindView(holder, payloads);
         Context context = holder.itemView.getContext();
-        holder.setTitle(mPresetFile.getName());
+        holder.setTitle(mImageData.getTitle());
+        holder.setAuthor(mImageData.getAuthor());
+        holder.mBackground.setImageBitmap(null);
         Glide.with(context)
                 .asBitmap()
-                .load(mPresetFile)
+                .load(mImageData.getThumbUrl())
                 .into(new BitmapImageViewTarget(holder.mPreview) {
                     @Override
                     public void onResourceReady(Bitmap r, @Nullable Transition<? super Bitmap> t) {
                         super.onResourceReady(r, t);
-                        holder.onBitmapSet(r);
+                        holder.onBitmapSet(r, false);
                     }
-                });
-        PresetInfoLoader.create(mPresetFile)
-                .load(context, info -> {
-                    holder.setTitle(info.getTitle());
-                    holder.setAuthor(info.getAuthor());
                 });
     }
 }

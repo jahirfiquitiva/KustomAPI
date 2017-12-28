@@ -1,0 +1,42 @@
+apply plugin: 'com.android.application'
+
+dependencies {
+    releaseImplementation project(":api")
+    debugImplementation project(":api")
+    releaseImplementation project(":dashboard")
+    debugImplementation project(":dashboard")
+    releaseImplementation project(":preset")
+    debugImplementation project(":preset")
+    implementation 'com.github.bumptech.glide:glide:4.4.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.4.0'
+}
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        applicationId "org.kustom.api.sample"
+        versionCode 1
+        versionName "1"
+        minSdkVersion 21
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        vectorDrawables.useSupportLibrary = true
+    }
+
+    buildTypes {
+        release {
+            shrinkResources false
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules'
+        }
+        aaptOptions {
+            noCompress 'zip', 'komp', 'klwp', 'kwgt', 'klck', 'kwch'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}

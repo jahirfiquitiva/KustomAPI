@@ -8,9 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+@SuppressWarnings({"ConstantConditions", "unused"})
 public class KustomConfig {
-    private final static String TAG = KustomConfig.class.getSimpleName();
-
     private static final Map<String, KustomEnv> sEnvs;
 
     static {
@@ -47,6 +46,12 @@ public class KustomConfig {
         ));
         sEnvs = Collections.unmodifiableMap(envs);
     }
+
+    public static final KustomEnv ENV_KWGT = sEnvs.get("kwgt");
+    public static final KustomEnv ENV_KLCK = sEnvs.get("klck");
+    public static final KustomEnv ENV_KLWP = sEnvs.get("klwp");
+    public static final KustomEnv ENV_KWCH = sEnvs.get("kwch");
+    public static final KustomEnv ENV_KOMP = sEnvs.get("komp");
 
     private KustomConfig() {
     }

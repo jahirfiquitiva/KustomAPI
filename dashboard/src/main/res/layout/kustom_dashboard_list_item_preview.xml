@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/colorPrimary">
+
+    <org.kustom.api.dashboard.views.AspectRatioImageView
+        android:id="@+id/background"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        app:aspectRatio="1"
+        app:aspectRatioEnabled="true"
+        app:dominantMeasurement="width"
+        tools:ignore="ContentDescription,RtlHardcoded" />
+
+    <org.kustom.api.dashboard.views.AspectRatioImageView
+        android:id="@+id/preview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:adjustViewBounds="true"
+        android:background="@android:color/transparent"
+        android:scaleType="centerCrop"
+        app:aspectRatio="1.78"
+        app:aspectRatioEnabled="true"
+        app:dominantMeasurement="width"
+        tools:ignore="ContentDescription,RtlHardcoded" />
+
+</FrameLayout>
