@@ -2,6 +2,7 @@ package org.kustom.api.dashboard;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.support.annotation.BoolRes;
 import android.support.annotation.StringRes;
 
@@ -22,6 +23,16 @@ public class DashboardSettings {
 
     public boolean wallsEnabled() {
         return getBoolean(R.bool.kustom_dashboard_walls);
+    }
+
+    public boolean wallsDownloadEnabled() {
+        return getBoolean(R.bool.kustom_dashboard_walls_download);
+    }
+
+    public String wallsDownloadDirectory() {
+        ApplicationInfo info = mContext.getApplicationInfo();
+        int stringId = info.labelRes;
+        return stringId == 0 ? info.nonLocalizedLabel.toString() : mContext.getString(stringId);
     }
 
     public int getLastPageIndex() {

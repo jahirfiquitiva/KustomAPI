@@ -45,6 +45,9 @@
     <!-- Enable or disable Wallpapers support -->
     <bool name="kustom_dashboard_walls">false</bool>
 
+    <!-- Enable or disable Wallpapers download support -->
+    <bool name="kustom_dashboard_walls_download">true</bool>
+
     <!--
     URL to JSON file containing a map of wallpapers if enabled
     Format info can be found at https://kustom.rocks/apkmaker/walls/format
