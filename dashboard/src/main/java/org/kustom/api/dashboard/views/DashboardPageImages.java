@@ -4,13 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.kustom.api.dashboard.ImagePreviewActivity;
 import org.kustom.api.dashboard.model.DashboardImageItem;
+import org.kustom.api.dashboard.utils.OkHttpUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,10 +23,13 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 public class DashboardPageImages extends DashboardPage<DashboardImageItem> {
-    private final OkHttpClient mHttpClient = new OkHttpClient();
+    private final OkHttpClient mHttpClient;
 
     public DashboardPageImages(@NonNull Context context) {
         super(context);
+        mHttpClient = new OkHttpClient.Builder()
+                .cache(OkHttpUtils.getCacheDirectory(context))
+                .build();
     }
 
     public void setUrl(String url) {
