@@ -2,9 +2,11 @@ package org.kustom.api.dashboard.model;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.annotation.CallSuper;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mikepenz.fastadapter.IClickable;
@@ -14,6 +16,8 @@ import com.mikepenz.fastadapter.items.AbstractItem;
 import org.kustom.api.dashboard.DashboardSettings;
 import org.kustom.api.dashboard.R;
 import org.kustom.api.dashboard.views.AspectRatioImageView;
+
+import java.util.List;
 
 public abstract class DashboardItem<Item extends IItem & IClickable>
         extends AbstractItem<Item, DashboardItem.ViewHolder> {
@@ -30,12 +34,18 @@ public abstract class DashboardItem<Item extends IItem & IClickable>
 
     @Override
     public final ViewHolder getViewHolder(View v) {
-        ViewHolder holder = new ViewHolder(v);
+        return new ViewHolder(v);
+    }
+
+    @CallSuper
+    @Override
+    public void bindView(ViewHolder holder, List<Object> payloads) {
+        super.bindView(holder, payloads);
         int padding = (int) getImageViewPadding(holder.itemView.getContext());
         holder.mInfo.setAlpha(hasTranslucentInfo() ? 0.8f : 1.0f);
         holder.mPreview.setPadding(padding, padding, padding, padding);
         holder.mPreview.setAspectRatio(getImageViewRatio());
-        return holder;
+        holder.mPreview.setScaleType(getImageScaleType());
     }
 
     boolean hasTranslucentInfo() {
@@ -48,6 +58,10 @@ public abstract class DashboardItem<Item extends IItem & IClickable>
 
     float getImageViewPadding(Context context) {
         return 0;
+    }
+
+    ImageView.ScaleType getImageScaleType() {
+        return ImageView.ScaleType.CENTER_CROP;
     }
 
     @SuppressWarnings("WeakerAccess")

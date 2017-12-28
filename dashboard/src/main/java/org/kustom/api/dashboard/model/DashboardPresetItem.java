@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
@@ -13,6 +14,7 @@ import org.kustom.api.dashboard.R;
 import org.kustom.api.dashboard.config.KustomConfig;
 import org.kustom.api.dashboard.utils.ScreenUtils;
 import org.kustom.api.dashboard.utils.WallpaperBitmapLoader;
+import org.kustom.api.dashboard.views.AspectRatioImageView;
 import org.kustom.api.preset.PresetFile;
 import org.kustom.api.preset.PresetInfoLoader;
 
@@ -22,10 +24,13 @@ public class DashboardPresetItem
         extends DashboardItem<DashboardPresetItem>
         implements Comparable<DashboardPresetItem> {
     private final PresetFile mPresetFile;
+    private final boolean mUseWidgetLayout;
 
     public DashboardPresetItem(@NonNull PresetFile presetFile, float screenRatio) {
         super(screenRatio);
         mPresetFile = presetFile;
+        mUseWidgetLayout = KustomConfig.ENV_KWGT.getExtension().equals(mPresetFile.getExt())
+                || KustomConfig.ENV_KOMP.getExtension().equals(mPresetFile.getExt());
     }
 
     @NonNull
@@ -60,9 +65,13 @@ public class DashboardPresetItem
         return useWidgetLayout() ? ScreenUtils.convertDpToPixel(20, context) : 0;
     }
 
+    @Override
+    ImageView.ScaleType getImageScaleType() {
+        return useWidgetLayout() ? ImageView.ScaleType.FIT_CENTER : super.getImageScaleType();
+    }
+
     private boolean useWidgetLayout() {
-        return KustomConfig.ENV_KWGT.getExtension().equals(mPresetFile.getExt())
-                || KustomConfig.ENV_KOMP.getExtension().equals(mPresetFile.getExt());
+        return mUseWidgetLayout;
     }
 
     @Override
