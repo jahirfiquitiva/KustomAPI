@@ -18,6 +18,7 @@ public class PresetFileDataFetcher implements DataFetcher<InputStream> {
     private final Context mContext;
     private final PresetFile mPresetFile;
     private ZipInputStream mZipStream = null;
+    private boolean mLandscape = false;
 
     PresetFileDataFetcher(Context context, PresetFile file) {
         mContext = context;
@@ -25,18 +26,23 @@ public class PresetFileDataFetcher implements DataFetcher<InputStream> {
     }
 
     @Override
-    public void loadData(Priority priority, DataCallback<? super InputStream> callback) {
+    public void loadData(@NonNull Priority priority, @NonNull DataCallback<? super InputStream> callback) {
+        String thumb;
+        if ("komp".equalsIgnoreCase(mPresetFile.getExt())) thumb = "komponent_thumb.jpg";
+        else if (mLandscape) thumb = "preset_thumb_landscape.jpg";
+        else thumb = "preset_thumb_portrait.jpg";
         try {
             mZipStream = new ZipInputStream(mPresetFile.getStream(mContext));
             ZipEntry ze;
+            boolean found = false;
             while ((ze = mZipStream.getNextEntry()) != null) {
-                if (ze.getName().equals("preset_thumb_portrait.jpg")) {
+                if (ze.getName().equals(thumb)) {
                     callback.onDataReady(mZipStream);
-                } else if (ze.getName().equals("komponent_thumb.jpg")) {
-                    callback.onDataReady(mZipStream);
+                    found = true;
+                    break;
                 }
             }
-            throw new IOException("Thumbnail not found");
+            if (!found) throw new IOException("Thumbnail not found");
         } catch (Exception e) {
             e.printStackTrace();
             callback.onLoadFailed(e);
@@ -65,5 +71,10 @@ public class PresetFileDataFetcher implements DataFetcher<InputStream> {
     @Override
     public DataSource getDataSource() {
         return DataSource.LOCAL;
+    }
+
+    PresetFileDataFetcher setLandscape(boolean landscape) {
+        mLandscape = landscape;
+        return this;
     }
 }

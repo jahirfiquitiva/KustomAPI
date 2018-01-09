@@ -15,7 +15,7 @@ ext {
     compileSdkVersion = 26
     targetSdkVersion = 26
     supportLibVersion = "27.0.2"
-    glideVersion = "4.4.0"
+    glideVersion = "4.5.0"
     gsonVersion = "2.8.2"
 }
 

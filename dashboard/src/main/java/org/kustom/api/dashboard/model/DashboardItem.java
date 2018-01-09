@@ -56,6 +56,10 @@ public abstract class DashboardItem<Item extends IItem & IClickable>
         return mScreenRatio;
     }
 
+    boolean isLandscape() {
+        return mScreenRatio < 1f;
+    }
+
     float getImageViewPadding(Context context) {
         return 0;
     }

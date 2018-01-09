@@ -1,6 +1,7 @@
 package org.kustom.api.preset.glide;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.bumptech.glide.load.model.ModelLoader;
 import com.bumptech.glide.load.model.ModelLoaderFactory;
@@ -17,8 +18,9 @@ public class PresetFileModuleFactory implements ModelLoaderFactory<PresetFile, I
         mContext = context.getApplicationContext();
     }
 
+    @NonNull
     @Override
-    public ModelLoader<PresetFile, InputStream> build(MultiModelLoaderFactory unused) {
+    public ModelLoader<PresetFile, InputStream> build(@NonNull MultiModelLoaderFactory unused) {
         return new PresetFileModelLoader(mContext);
     }
 

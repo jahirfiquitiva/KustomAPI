@@ -4,9 +4,11 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.transition.Transition;
 
@@ -14,9 +16,9 @@ import org.kustom.api.dashboard.R;
 import org.kustom.api.dashboard.config.KustomConfig;
 import org.kustom.api.dashboard.utils.ScreenUtils;
 import org.kustom.api.dashboard.utils.WallpaperBitmapLoader;
-import org.kustom.api.dashboard.views.AspectRatioImageView;
 import org.kustom.api.preset.PresetFile;
 import org.kustom.api.preset.PresetInfoLoader;
+import org.kustom.api.preset.glide.PresetFileModelLoader;
 
 import java.util.List;
 
@@ -82,9 +84,10 @@ public class DashboardPresetItem
         Glide.with(context)
                 .asBitmap()
                 .load(mPresetFile)
+                .apply(RequestOptions.option(PresetFileModelLoader.ORIENTATION_LAND, isLandscape()))
                 .into(new BitmapImageViewTarget(holder.mPreview) {
                     @Override
-                    public void onResourceReady(Bitmap r, @Nullable Transition<? super Bitmap> t) {
+                    public void onResourceReady(@NonNull Bitmap r, @Nullable Transition<? super Bitmap> t) {
                         super.onResourceReady(r, t);
                         holder.onBitmapSet(r, useWidgetLayout());
                     }
@@ -101,7 +104,11 @@ public class DashboardPresetItem
                     .load(context, bitmap -> {
                         if (bitmap != null)
                             holder.mBackground.setImageBitmap(bitmap);
+                        holder.mBackground.setVisibility(View.VISIBLE);
                     });
+        } else {
+            holder.mBackground.setImageBitmap(null);
+            holder.mBackground.setVisibility(View.GONE);
         }
     }
 }

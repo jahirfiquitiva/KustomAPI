@@ -1,5 +1,7 @@
 package org.kustom.api.preset.glide;
 
+import android.support.annotation.NonNull;
+
 import com.bumptech.glide.load.Key;
 
 import org.kustom.api.preset.PresetFile;
@@ -29,7 +31,7 @@ public class PresetFileKey implements Key {
     }
 
     @Override
-    public void updateDiskCacheKey(MessageDigest messageDigest) {
+    public void updateDiskCacheKey(@NonNull MessageDigest messageDigest) {
         messageDigest.update(mPath.getBytes(Key.CHARSET));
     }
 }
