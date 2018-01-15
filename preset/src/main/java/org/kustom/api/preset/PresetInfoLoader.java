@@ -19,21 +19,30 @@ import java.util.zip.ZipInputStream;
 @SuppressWarnings("unused")
 public class PresetInfoLoader {
     private final static HashMap<String, PresetInfo> sPresetInfoCache = new HashMap<>();
-    private final PresetFile mFile;
+    private PresetFile mFile;
+    private InputStream mInputStream;
 
     private PresetInfoLoader(PresetFile file) {
         mFile = file;
+    }
+
+    private PresetInfoLoader(InputStream inputStream) {
+        mInputStream = inputStream;
     }
 
     public static PresetInfoLoader create(@NonNull PresetFile file) {
         return new PresetInfoLoader(file);
     }
 
+    public static PresetInfoLoader create(@NonNull InputStream stream) {
+        return new PresetInfoLoader(stream);
+    }
+
     public void load(@NonNull Context context, @NonNull Callback callback) {
         synchronized (sPresetInfoCache) {
             if (sPresetInfoCache.containsKey(mFile.getPath()))
                 callback.onInfoLoaded(sPresetInfoCache.get(mFile.getPath()));
-            else new LoaderTask(context, callback, mFile).execute();
+            else new LoaderTask(context, callback, mFile, mInputStream).execute();
         }
     }
 
@@ -46,33 +55,51 @@ public class PresetInfoLoader {
         private final Callback mCallback;
         private final Context mContext;
         private final PresetFile mFile;
+        private InputStream mStream;
 
-        LoaderTask(Context context, Callback callback, PresetFile file) {
+        LoaderTask(Context context, Callback callback, PresetFile file, InputStream stream) {
             mContext = context.getApplicationContext();
             mCallback = callback;
             mFile = file;
+            mStream = stream;
         }
 
         @Override
         protected PresetInfo doInBackground(Void... params) {
-            try (ZipInputStream zis = new ZipInputStream(mFile.getStream(mContext))) {
-                ZipEntry ze;
-                boolean found = false;
-                while ((ze = zis.getNextEntry()) != null) {
-                    if (ze.getName().equals("preset.json")) {
-                        found = true;
-                        break;
-                    } else if (ze.getName().equals("komponent_thumb.jpg")) {
-                        found = true;
-                        break;
+            PresetInfo result = null;
+            // From file
+            if (mStream == null) {
+                try (ZipInputStream zis = new ZipInputStream(mFile.getStream(mContext))) {
+                    ZipEntry ze;
+                    boolean found = false;
+                    while ((ze = zis.getNextEntry()) != null) {
+                        if (ze.getName().equalsIgnoreCase("preset.json")
+                                || ze.getName().equalsIgnoreCase("komponent.json")) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found) result = buildFromStream(zis);
+                    else throw new IOException("Preset info not found");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            // From stream
+            else {
+                try {
+                    result = buildFromStream(mStream);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        mStream.close();
+                    } catch (Exception ignored) {
                     }
                 }
-                if (found) return buildFromStream(zis);
-                else throw new IOException("Preset info not found");
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
             }
+            // Done
+            return result;
         }
 
         @Override
