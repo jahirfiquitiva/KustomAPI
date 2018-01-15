@@ -22,20 +22,22 @@ public class PresetInfoLoader {
     private PresetFile mFile;
     private InputStream mInputStream;
 
-    private PresetInfoLoader(PresetFile file) {
+    private PresetInfoLoader(@NonNull PresetFile file) {
         mFile = file;
-    }
-
-    private PresetInfoLoader(InputStream inputStream) {
-        mInputStream = inputStream;
     }
 
     public static PresetInfoLoader create(@NonNull PresetFile file) {
         return new PresetInfoLoader(file);
     }
 
-    public static PresetInfoLoader create(@NonNull InputStream stream) {
-        return new PresetInfoLoader(stream);
+    /**
+     * Override stream from which data will be loaded
+     *
+     * @param stream the input stream to load JSON from
+     */
+    public PresetInfoLoader withStream(@NonNull InputStream stream) {
+        mInputStream = stream;
+        return this;
     }
 
     public void load(@NonNull Context context, @NonNull Callback callback) {
