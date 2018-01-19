@@ -9,15 +9,12 @@ import com.bumptech.glide.load.data.DataFetcher;
 
 import org.kustom.api.preset.PresetFile;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 public class PresetFileDataFetcher implements DataFetcher<InputStream> {
     private final Context mContext;
     private final PresetFile mPresetFile;
-    private ZipInputStream mZipStream = null;
+    private InputStream mStream = null;
     private boolean mLandscape = false;
 
     PresetFileDataFetcher(Context context, PresetFile file) {
@@ -26,23 +23,14 @@ public class PresetFileDataFetcher implements DataFetcher<InputStream> {
     }
 
     @Override
-    public void loadData(@NonNull Priority priority, @NonNull DataCallback<? super InputStream> callback) {
+    public void loadData(@NonNull Priority p, @NonNull DataCallback<? super InputStream> callback) {
         String thumb;
-        if ("komp".equalsIgnoreCase(mPresetFile.getExt())) thumb = "komponent_thumb.jpg";
+        if (mPresetFile.isKomponent()) thumb = "komponent_thumb.jpg";
         else if (mLandscape) thumb = "preset_thumb_landscape.jpg";
         else thumb = "preset_thumb_portrait.jpg";
         try {
-            mZipStream = new ZipInputStream(mPresetFile.getStream(mContext));
-            ZipEntry ze;
-            boolean found = false;
-            while ((ze = mZipStream.getNextEntry()) != null) {
-                if (ze.getName().equals(thumb)) {
-                    callback.onDataReady(mZipStream);
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) throw new IOException("Thumbnail not found");
+            mStream = mPresetFile.getStream(mContext, thumb);
+            callback.onDataReady(mStream);
         } catch (Exception e) {
             e.printStackTrace();
             callback.onLoadFailed(e);
@@ -51,8 +39,8 @@ public class PresetFileDataFetcher implements DataFetcher<InputStream> {
 
     @Override
     public void cleanup() {
-        if (mZipStream != null) try {
-            mZipStream.close();
+        if (mStream != null) try {
+            mStream.close();
         } catch (Exception ignored) {
         }
     }

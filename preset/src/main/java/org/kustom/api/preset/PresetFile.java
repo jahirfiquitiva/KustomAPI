@@ -25,9 +25,14 @@ public abstract class PresetFile {
         return mExt;
     }
 
+    public boolean isKomponent() {
+        return "komp".equalsIgnoreCase(mExt);
+    }
+
     public abstract String getPath();
 
-    public abstract InputStream getStream(@NonNull Context context) throws IOException;
+    public abstract InputStream getStream(@NonNull Context context, @NonNull String file)
+            throws IOException;
 
     @Override
     public String toString() {
