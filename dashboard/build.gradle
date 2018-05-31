@@ -11,7 +11,7 @@ dependencies {
     }
     api 'com.mikepenz:fastadapter-commons:3.0.5@aar'
     api 'com.jpardogo.materialtabstrip:library:1.1.1'
-    api 'com.squareup.okhttp3:okhttp:3.9.1'
+    api 'com.squareup.okhttp3:okhttp:3.10.0'
     implementation 'org.bitbucket.frankmonza:kustompreset:1.4'
     implementation "com.github.bumptech.glide:glide:$glideVersion"
     annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
@@ -39,4 +39,5 @@ android {
     }
 }
 
+apply from: '../lib-artifacts.gradle'
 apply from: '../maven.gradle'

@@ -25,4 +25,5 @@ android {
     }
 }
 
+apply from: '../lib-artifacts.gradle'
 apply from: '../maven.gradle'
