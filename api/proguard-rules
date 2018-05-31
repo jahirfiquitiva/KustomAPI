@@ -1,0 +1,4 @@
+# Kustom API (do not change this)
+-keepattributes Signature,Exceptions,*Annotation*,SourceFile,LineNumberTable,EnclosingMethod
+-keep class org.kustom.**
+-keepclassmembers class org.kustom.** { *; }
