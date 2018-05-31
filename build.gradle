@@ -29,6 +29,7 @@ allprojects {
     }
 }
 
+/*
 gradle.taskGraph.whenReady { taskGraph ->
     if (taskGraph.allTasks.any { it instanceof Sign }) {
         allprojects { ext."signing.keyId" = project.keyId }
@@ -36,3 +37,4 @@ gradle.taskGraph.whenReady { taskGraph ->
         allprojects { ext."signing.secretKeyRingFile" = project.keyFile }
     }
 }
+*/
