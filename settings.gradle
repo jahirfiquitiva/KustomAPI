@@ -1,5 +1,1 @@
-include ':api'
-include ':preset'
-include ':dashboard'
-include ':weather'
-include ':sample'
+include ':dashboard', ':api', ':preset', ':weather' //  ':sample',

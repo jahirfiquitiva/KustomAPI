@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
+    api project(path: ':api')
     api "com.android.support:appcompat-v7:$supportLibVersion"
     api "com.android.support:support-annotations:$supportLibVersion"
     api "com.android.support:recyclerview-v7:$supportLibVersion"
@@ -14,7 +15,6 @@ dependencies {
     api 'com.mikepenz:fastadapter-commons:3.0.5@aar'
     api 'com.jpardogo.materialtabstrip:library:1.1.1'
     api 'com.squareup.okhttp3:okhttp:3.10.0'
-    implementation 'org.bitbucket.frankmonza:kustompreset:1.4'
     implementation "com.github.bumptech.glide:glide:$glideVersion"
     annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
 }

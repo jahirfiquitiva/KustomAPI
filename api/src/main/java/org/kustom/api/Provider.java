@@ -282,15 +282,15 @@ public class Provider extends ContentProvider {
     }
 
     private String getArchivePath(List<String> segments) {
-        String path = "";
+        StringBuilder path = new StringBuilder();
         for (int i = 0; i < segments.size(); i++) {
             String segment = segments.get(i);
             if (segment.length() > 0) {
                 if (segment.matches(ARCHIVE_REGEXP)) {
-                    if (i < segments.size() - 1) path += segment;
-                    return trimPath(path);
+                    if (i < segments.size() - 1) path.append(segment);
+                    return trimPath(path.toString());
                 } else {
-                    path += segment + "/";
+                    path.append(segment).append("/");
                 }
             }
         }
@@ -298,19 +298,19 @@ public class Provider extends ContentProvider {
     }
 
     private String getFilePath(List<String> segments) {
-        String path = "";
+        StringBuilder path = new StringBuilder();
         for (int i = 0; i < segments.size(); i++) {
             String segment = segments.get(i);
             if (segment.length() > 0) {
-                path += "/" + segment;
+                path.append("/").append(segment);
                 // Start over if we find an archive
                 if (segment.matches(ARCHIVE_REGEXP)) {
-                    if (i < segments.size() - 1) path = "";
+                    if (i < segments.size() - 1) path = new StringBuilder();
                     else return trimPath(segment);
                 }
             }
         }
-        return trimPath(path);
+        return trimPath(path.toString());
     }
 
     private String trimPath(String path) {
