@@ -1,5 +1,8 @@
 package org.kustom.api.dashboard.utils;
 
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
+
 import android.annotation.SuppressLint;
 import android.app.WallpaperManager;
 import android.content.Context;
@@ -8,9 +11,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
 
 import org.kustom.api.preset.PresetInfo;
 

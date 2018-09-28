@@ -3,6 +3,7 @@ apply plugin: 'com.android.library'
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
     api project(path: ':api')
+    api project(path: ':preset')
     api "com.android.support:appcompat-v7:$supportLibVersion"
     api "com.android.support:support-annotations:$supportLibVersion"
     api "com.android.support:recyclerview-v7:$supportLibVersion"
