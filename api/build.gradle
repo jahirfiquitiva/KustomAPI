@@ -1,9 +1,9 @@
 apply plugin: 'com.android.library'
 
 dependencies {
-    api fileTree(dir: 'libs', include: ['*.jar'])
-    api "com.android.support:appcompat-v7:$supportLibVersion"
-    api "com.android.support:support-annotations:$supportLibVersion"
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "com.android.support:appcompat-v7:$supportLibVersion"
+    implementation "com.android.support:support-annotations:$supportLibVersion"
 }
 
 android {
