@@ -35,14 +35,14 @@ public class FileInfo {
 
     protected static Cursor buildCursor(boolean isValid, File sourceFile) {
         MatrixCursor cursor = new MatrixCursor(new String[]{
-                COL_VALID,
-                COL_SIZE,
-                COL_MODIFIED
+            COL_VALID,
+            COL_SIZE,
+            COL_MODIFIED
         });
         cursor.addRow(new String[]{
-                Boolean.toString(isValid),
-                Long.toString(sourceFile.length()),
-                Long.toString(sourceFile.lastModified())
+            Boolean.toString(isValid),
+            Long.toString(sourceFile.length()),
+            Long.toString(sourceFile.lastModified())
         });
         cursor.moveToFirst();
         return cursor;

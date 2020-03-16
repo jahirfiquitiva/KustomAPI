@@ -10,8 +10,6 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.File;
@@ -25,32 +23,48 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import static android.os.ParcelFileDescriptor.MODE_READ_ONLY;
 
 @SuppressLint("Registered")
 public class Provider extends ContentProvider {
-    private final static String TAG = Provider.class.getSimpleName();
-
     /**
      * Used to match an archive kfile archive
      */
     public final static String ARCHIVE_REGEXP = ".*\\.(k...)(\\.zip)?(/.*)?";
-
     /**
      * List action used to get contents of the provider on a specific path
      */
     public static final String ACTION_LIST = "list";
-
     /**
      * Info action used to get last modification date and file name of a cached item
      */
     public static final String ACTION_INFO = "info";
-
+    private final static String TAG = Provider.class.getSimpleName();
     /**
      * Shared prefs file used for upgrade
      */
     private static final String SHARED_PREFS = "kustom_provider";
     private static final String PREF_LAST_UPGRADE = "last_upgrade";
+
+    @SuppressWarnings("unused")
+    public static Uri buildQuery(String authority, String action, String archivePath, String path) {
+        return Uri.parse(String.format("content://%s/%s/%s/%s", authority, action,
+                                       archivePath == null ? "" : archivePath, path));
+    }
+
+    @SuppressWarnings("unused")
+    public static Uri buildContentUri(String authority, String archivePath, String path) {
+        return Uri.parse(String.format("content://%s/%s/%s", authority,
+                                       archivePath == null ? "" : archivePath, path));
+    }
+
+    @SuppressWarnings("unused")
+    public static FileInfo buildFileInfo(Cursor c) {
+        return new FileInfo(c);
+    }
 
     /**
      * Unsupported
@@ -93,7 +107,7 @@ public class Provider extends ContentProvider {
             SharedPreferences sp = getContext().getSharedPreferences(SHARED_PREFS, 0);
             final int lastUpgradedRelease = sp.getInt(PREF_LAST_UPGRADE, 0);
             final int currentRelease = getContext().getPackageManager()
-                    .getPackageInfo(getContext().getPackageName(), 0).versionCode;
+                .getPackageInfo(getContext().getPackageName(), 0).versionCode;
             if (lastUpgradedRelease != currentRelease) {
                 Log.i(TAG, "Clearing cache after upgrade");
                 CacheHelper.clearCache(getContext(), "provider");
@@ -109,7 +123,7 @@ public class Provider extends ContentProvider {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     public ParcelFileDescriptor openFile(@NonNull Uri uri, @NonNull String mode)
-            throws FileNotFoundException {
+        throws FileNotFoundException {
         final String archivePath = getArchivePath(uri.getPathSegments());
         final String filePath = getFilePath(uri.getPathSegments());
         Log.i(TAG, "Open: " + uri);
@@ -200,23 +214,6 @@ public class Provider extends ContentProvider {
         // Unsupported op
         Log.e(TAG, "Unsupported operation, uri: " + uri);
         return null;
-    }
-
-    @SuppressWarnings("unused")
-    public static Uri buildQuery(String authority, String action, String archivePath, String path) {
-        return Uri.parse(String.format("content://%s/%s/%s/%s", authority, action,
-                archivePath == null ? "" : archivePath, path));
-    }
-
-    @SuppressWarnings("unused")
-    public static Uri buildContentUri(String authority, String archivePath, String path) {
-        return Uri.parse(String.format("content://%s/%s/%s", authority,
-                archivePath == null ? "" : archivePath, path));
-    }
-
-    @SuppressWarnings("unused")
-    public static FileInfo buildFileInfo(Cursor c) {
-        return new FileInfo(c);
     }
 
     private File getArchiveFile(String archivePath) throws IOException {
